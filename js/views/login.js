@@ -1,12 +1,10 @@
 /* ==========================================================================
-   Alcove Notion-Style Landing Page & Auth Modal View Router Module
+   Alcove Notion-Style Landing Page & Login Modal Router Module
    ========================================================================== */
 
-import { signInUser, signUpUser } from '../supabase.js';
+import { signInUser } from '../supabase.js';
 
 export const loginView = {
-    isSignUp: false, // Toggles modal display mode
-
     template() {
         return `
             <!-- Landing Page Header Navigation -->
@@ -27,7 +25,7 @@ export const loginView = {
             <section class="landing-hero">
                 <h1>Your school life, in one organized workspace.</h1>
                 <p>
-                    Alcove brings classes, assignments, GPA tracking, study sheets, and classmate group chats together into one beautiful, flat workspace.
+                    Alcove brings classes, assignments, GPA tracking, study sheets, and classmate group chats together into one beautiful place.
                 </p>
                 <button class="btn btn-primary" id="hero-cta-btn" style="padding: 8px 16px; font-size:13.5px; font-weight:600;">
                     Get Alcove Free &rarr;
@@ -107,72 +105,44 @@ export const loginView = {
 
             </section>
 
-            <!-- Authentication Overlay Modal Card -->
+            <!-- Authentication Overlay Modal Card (Login Only) -->
             <div id="auth-modal-overlay" class="modal-overlay">
-                <div class="modal-content glass-panel" style="position: relative; max-width: 360px; width: 100%; padding: 28px; background-color: var(--panel-bg); border-radius: var(--border-radius-md); border: 1px solid var(--border-color); box-shadow: 0 12px 36px rgba(0,0,0,0.15);">
+                <div class="modal-content glass-panel" style="position: relative; max-width: 350px; width: 100%; padding: 28px; background-color: var(--panel-bg); border-radius: var(--border-radius-md); border: 1px solid var(--border-color); box-shadow: 0 12px 36px rgba(0,0,0,0.15);">
                     
                     <!-- Close Modal Trigger -->
                     <button class="close-modal-btn" id="auth-close-btn" style="position: absolute; top: 12px; right: 14px; font-size: 18px; border:none; background:none; cursor:pointer; color:var(--text-muted);">&times;</button>
                     
                     <!-- Branded logo header -->
-                    <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="text-align: center; margin-bottom: 22px;">
                         <img src="logo.jpg" alt="Alcove Logo" style="width: 44px; height: 44px; border-radius: 6px; border: 1px solid var(--border-color); object-fit: cover; margin-bottom: 8px;">
-                        <h3 class="font-heading font-bold" id="auth-modal-title" style="font-size: 15px; color: var(--text-primary); letter-spacing:-0.2px;">Log In to Alcove</h3>
+                        <h3 class="font-heading font-bold" style="font-size: 16px; color: var(--text-primary); letter-spacing:-0.2px;">Log In to Alcove</h3>
                     </div>
 
-                    <!-- Modal Tabs toggling login/signup state -->
-                    <div style="display: flex; border-bottom: 1px solid var(--border-color); margin-bottom: 16px; gap: 14px;">
-                        <button id="modal-tab-login" style="flex: 1; padding: 6px 0; font-size: 12px; font-weight: 600; text-align: center; cursor:pointer;">
-                            Log In
-                        </button>
-                        <button id="modal-tab-signup" style="flex: 1; padding: 6px 0; font-size: 12px; font-weight: 600; text-align: center; cursor:pointer;">
-                            Sign Up
-                        </button>
-                    </div>
-
-                    <!-- Form submission -->
-                    <form id="modal-auth-form" style="display: flex; flex-direction: column; gap: 10px;">
+                    <!-- Login Form submission -->
+                    <form id="modal-auth-form" style="display: flex; flex-direction: column; gap: 12px;">
                         
-                        <!-- Full Name (Signup only) -->
-                        <div class="form-group" id="modal-group-fullname" style="display: none;">
-                            <label for="modal-fullname">Full Name</label>
-                            <input type="text" id="modal-fullname" placeholder="Alex Rivera" style="width: 100%; padding: 5px 8px; border-radius: var(--border-radius-sm); border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-primary); font-size: 12px;">
-                        </div>
-
-                        <!-- School Selector (Signup only) -->
-                        <div class="form-group" id="modal-group-school" style="display: none;">
-                            <label for="modal-school">University</label>
-                            <select id="modal-school" style="width: 100%; padding: 5px 8px; border-radius: var(--border-radius-sm); border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-primary); font-size: 12px;">
-                                <option value="Stanford University">Stanford University</option>
-                                <option value="UC Berkeley">UC Berkeley</option>
-                                <option value="MIT">MIT</option>
-                                <option value="Harvard University">Harvard University</option>
-                                <option value="Other University">Other University</option>
-                            </select>
-                        </div>
-
                         <!-- Email -->
                         <div class="form-group">
                             <label for="modal-email">Email Address</label>
-                            <input type="email" id="modal-email" placeholder="you@university.edu" required style="width: 100%; padding: 5px 8px; border-radius: var(--border-radius-sm); border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-primary); font-size: 12px;">
+                            <input type="email" id="modal-email" placeholder="you@university.edu" required style="width: 100%; padding: 6px 10px; border-radius: var(--border-radius-sm); border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-primary); font-size: 12.5px;">
                         </div>
 
                         <!-- Password -->
                         <div class="form-group">
                             <label for="modal-password">Password</label>
-                            <input type="password" id="modal-password" placeholder="Min. 6 characters" required style="width: 100%; padding: 5px 8px; border-radius: var(--border-radius-sm); border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-primary); font-size: 12px;">
+                            <input type="password" id="modal-password" placeholder="Password" required style="width: 100%; padding: 6px 10px; border-radius: var(--border-radius-sm); border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-primary); font-size: 12.5px;">
                         </div>
 
                         <!-- Submit action button -->
-                        <button type="submit" class="btn btn-primary w-100" id="modal-submit-btn" style="margin-top: 8px; font-weight: 600; padding: 6px; font-size:12px;">
+                        <button type="submit" class="btn btn-primary w-100" id="modal-submit-btn" style="margin-top: 6px; font-weight: 600; padding: 7px; font-size:12.5px;">
                             Continue
                         </button>
                     </form>
 
                     <!-- Bottom Toggle Option link -->
-                    <div style="text-align: center; margin-top: 14px; font-size: 10.5px; color: var(--text-muted);">
-                        <span id="modal-toggle-notice-text">Don't have an account?</span>
-                        <a href="#" id="modal-toggle-link" style="color: var(--color-primary); font-weight: 600; margin-left: 2px;">Sign up</a>
+                    <div style="text-align: center; margin-top: 18px; font-size: 11px; color: var(--text-muted);">
+                        <span>Don't have an account?</span>
+                        <a href="#signup" style="color: var(--color-primary); font-weight: 600; margin-left: 2px;">Sign up</a>
                     </div>
 
                 </div>
@@ -187,10 +157,8 @@ export const loginView = {
     bindEvents() {
         const overlay = document.getElementById('auth-modal-overlay');
         
-        const openModal = (signUpState) => {
-            this.isSignUp = signUpState;
+        const openModal = () => {
             if (overlay) overlay.classList.add('active');
-            this.updateModalState();
         };
 
         const closeModal = () => {
@@ -198,34 +166,21 @@ export const loginView = {
         };
 
         // Header Navigation Hooks
-        document.getElementById('nav-login-btn').addEventListener('click', () => openModal(false));
-        document.getElementById('nav-signup-btn').addEventListener('click', () => openModal(true));
+        document.getElementById('nav-login-btn').addEventListener('click', openModal);
         
-        // Hero Call to Action Hook
-        document.getElementById('hero-cta-btn').addEventListener('click', () => openModal(true));
+        // Redirect to Onboarding Wizard for Sign Up actions
+        document.getElementById('nav-signup-btn').addEventListener('click', () => {
+            window.location.hash = '#signup';
+        });
+        
+        document.getElementById('hero-cta-btn').addEventListener('click', () => {
+            window.location.hash = '#signup';
+        });
 
         // Close Trigger Button hooks
         document.getElementById('auth-close-btn').addEventListener('click', closeModal);
         overlay.addEventListener('click', (e) => {
             if (e.target === overlay) closeModal();
-        });
-
-        // Modal Tab Buttons Switchers
-        document.getElementById('modal-tab-login').addEventListener('click', () => {
-            this.isSignUp = false;
-            this.updateModalState();
-        });
-        
-        document.getElementById('modal-tab-signup').addEventListener('click', () => {
-            this.isSignUp = true;
-            this.updateModalState();
-        });
-
-        // Bottom link toggle
-        document.getElementById('modal-toggle-link').addEventListener('click', (e) => {
-            e.preventDefault();
-            this.isSignUp = !this.isSignUp;
-            this.updateModalState();
         });
 
         // Auth Form submit trigger
@@ -238,23 +193,12 @@ export const loginView = {
                 const submitBtn = document.getElementById('modal-submit-btn');
 
                 submitBtn.disabled = true;
-                submitBtn.textContent = this.isSignUp ? "Creating account..." : "Logging in...";
+                submitBtn.textContent = "Logging in...";
 
                 try {
-                    if (this.isSignUp) {
-                        const fullName = document.getElementById('modal-fullname').value;
-                        const schoolName = document.getElementById('modal-school').value;
-                        
-                        await signUpUser(email, password, fullName, schoolName);
-                        window.app.showToast("Account created! Check email if verification is active.", "success");
-                        this.isSignUp = false;
-                        this.updateModalState();
-                    } else {
-                        await signInUser(email, password);
-                        window.app.showToast("Successfully logged in!", "success");
-                        closeModal();
-                        // appState listener will trigger routing to dashboard!
-                    }
+                    await signInUser(email, password);
+                    window.app.showToast("Successfully logged in!", "success");
+                    closeModal();
                 } catch (error) {
                     console.error("Auth error:", error);
                     window.app.showToast(error.message || "Failed to authenticate.", "danger");
@@ -262,51 +206,6 @@ export const loginView = {
                     submitBtn.textContent = 'Continue';
                 }
             };
-        }
-    },
-
-    // Handles the toggles between Login and Signup display inside the active modal
-    updateModalState() {
-        const title = document.getElementById('auth-modal-title');
-        const submitBtn = document.getElementById('modal-submit-btn');
-        const loginTab = document.getElementById('modal-tab-login');
-        const signupTab = document.getElementById('modal-tab-signup');
-        const noticeText = document.getElementById('modal-toggle-notice-text');
-        const toggleLink = document.getElementById('modal-toggle-link');
-
-        const nameGroup = document.getElementById('modal-group-fullname');
-        const schoolGroup = document.getElementById('modal-group-school');
-        
-        const nameInput = document.getElementById('modal-fullname');
-
-        // Styles reset
-        loginTab.style.color = 'var(--text-muted)';
-        loginTab.style.borderBottom = '2px solid transparent';
-        signupTab.style.color = 'var(--text-muted)';
-        signupTab.style.borderBottom = '2px solid transparent';
-
-        if (this.isSignUp) {
-            title.textContent = "Create your account";
-            submitBtn.textContent = "Create Account";
-            signupTab.style.color = 'var(--text-primary)';
-            signupTab.style.borderBottom = '2px solid var(--color-primary)';
-            noticeText.textContent = "Already have an account?";
-            toggleLink.textContent = "Log in";
-
-            nameGroup.style.display = 'block';
-            schoolGroup.style.display = 'block';
-            nameInput.required = true;
-        } else {
-            title.textContent = "Log In to Alcove";
-            submitBtn.textContent = "Continue";
-            loginTab.style.color = 'var(--text-primary)';
-            loginTab.style.borderBottom = '2px solid var(--color-primary)';
-            noticeText.textContent = "Don't have an account?";
-            toggleLink.textContent = "Sign up";
-
-            nameGroup.style.display = 'none';
-            schoolGroup.style.display = 'none';
-            nameInput.required = false;
         }
     }
 };

@@ -28,13 +28,13 @@ export function getSupabase() {
 
 /**
  * Register a new user and create their profile.
- * We store details in user_metadata (requires no tables) AND try to write to a profiles table.
+ * Storing demographic fields in metadata and profiles table.
  */
-export async function signUpUser(email, password, fullName, schoolName) {
+export async function signUpUser(email, password, fullName, schoolName, details = {}) {
     const sb = getSupabase();
     if (!sb) throw new Error("Database client not initialized.");
 
-    // 1. Sign up user via Supabase Auth (stores details in secure metadata)
+    // 1. Sign up user via Supabase Auth
     const { data, error } = await sb.auth.signUp({
         email,
         password,
@@ -42,6 +42,12 @@ export async function signUpUser(email, password, fullName, schoolName) {
             data: {
                 full_name: fullName,
                 school_name: schoolName,
+                age: details.age || null,
+                state: details.state || "",
+                city: details.city || "",
+                education_level: details.educationLevel || "college",
+                major: details.major || "",
+                grad_year: details.gradYear || "",
                 avatar_url: `https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80`
             }
         }
@@ -49,7 +55,7 @@ export async function signUpUser(email, password, fullName, schoolName) {
 
     if (error) throw error;
 
-    // 2. Try writing to public.profiles table (fails gracefully if table is not created yet)
+    // 2. Try writing to public.profiles table
     if (data.user) {
         try {
             const { error: profileError } = await sb
@@ -58,12 +64,17 @@ export async function signUpUser(email, password, fullName, schoolName) {
                     id: data.user.id,
                     full_name: fullName,
                     school_name: schoolName,
+                    age: details.age || null,
+                    state: details.state || "",
+                    city: details.city || "",
+                    education_level: details.educationLevel || "college",
+                    major: details.major || "",
+                    grad_year: details.gradYear || "",
                     updated_at: new Date().toISOString()
                 });
             
             if (profileError) {
-                console.warn("Profiles table write failed (table might not exist yet):", profileError.message);
-                // Safe to ignore since user_metadata works as fallback
+                console.warn("Profiles table write failed:", profileError.message);
             }
         } catch (e) {
             console.warn("Failed to write to profiles table:", e);
@@ -110,7 +121,13 @@ export async function getUserProfile(user) {
         email: user.email,
         name: user.user_metadata?.full_name || "Alex Rivera",
         school: user.user_metadata?.school_name || "Stanford University",
-        avatar: user.user_metadata?.avatar_url || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80"
+        avatar: user.user_metadata?.avatar_url || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
+        age: user.user_metadata?.age || null,
+        state: user.user_metadata?.state || "",
+        city: user.user_metadata?.city || "",
+        educationLevel: user.user_metadata?.education_level || "college",
+        major: user.user_metadata?.major || "",
+        gradYear: user.user_metadata?.grad_year || ""
     };
 
     const sb = getSupabase();
@@ -127,6 +144,12 @@ export async function getUserProfile(user) {
         if (data && !error) {
             profile.name = data.full_name || profile.name;
             profile.school = data.school_name || profile.school;
+            profile.age = data.age || profile.age;
+            profile.state = data.state || profile.state;
+            profile.city = data.city || profile.city;
+            profile.educationLevel = data.education_level || profile.educationLevel;
+            profile.major = data.major || profile.major;
+            profile.gradYear = data.grad_year || profile.gradYear;
             if (data.avatar_url) profile.avatar = data.avatar_url;
         }
     } catch (e) {

@@ -6,6 +6,7 @@ import { store } from './store.js';
 import { getSupabase, getUserProfile, signOutUser } from './supabase.js';
 
 import { loginView } from './views/login.js';
+import { signupView } from './views/signup.js';
 import { dashboardView } from './views/dashboard.js';
 import { plannerView } from './views/planner.js';
 import { gpaView } from './views/gpa.js';
@@ -17,6 +18,7 @@ import { eventsView } from './views/events.js';
 // Route register
 const ROUTES = {
     login: loginView,
+    signup: signupView,
     dashboard: dashboardView,
     planner: plannerView,
     gpa: gpaView,
@@ -194,8 +196,8 @@ class AppController {
                 appContainer.classList.remove('landing-active');
                 appContainer.style.display = 'grid';
 
-                // Route away from login if needed
-                if (!window.location.hash || window.location.hash === '#login') {
+                // Route away from login/signup if needed
+                if (!window.location.hash || window.location.hash === '#login' || window.location.hash === '#signup') {
                     window.location.hash = '#dashboard';
                 } else {
                     this.handleRoute();
@@ -204,12 +206,14 @@ class AppController {
                 // User is unauthenticated / logged out
                 this.user = null;
                 
-                // Apply landing page grid overrides and show viewport
-                const appContainer = document.getElementById('main-app-container');
-                appContainer.classList.add('landing-active');
-                appContainer.style.display = 'block';
+                // Route to correct guest route
+                const hash = window.location.hash.substring(1);
+                if (hash === 'signup') {
+                    window.location.hash = '#signup';
+                } else {
+                    window.location.hash = '#login';
+                }
                 
-                window.location.hash = '#login';
                 this.handleRoute();
             }
         });
@@ -220,10 +224,10 @@ class AppController {
         let hash = window.location.hash.substring(1) || 'dashboard';
         
         // Auth gate guard
-        if (!this.user && hash !== 'login') {
+        if (!this.user && hash !== 'login' && hash !== 'signup') {
             window.location.hash = '#login';
             hash = 'login';
-        } else if (this.user && hash === 'login') {
+        } else if (this.user && (hash === 'login' || hash === 'signup')) {
             window.location.hash = '#dashboard';
             hash = 'dashboard';
         }
@@ -240,6 +244,16 @@ class AppController {
                     item.classList.add('active');
                 }
             });
+
+            // Display application canvas / landing page view overrides
+            const appContainer = document.getElementById('main-app-container');
+            if (hash === 'login' || hash === 'signup') {
+                appContainer.classList.add('landing-active');
+                appContainer.style.display = 'block';
+            } else {
+                appContainer.classList.remove('landing-active');
+                appContainer.style.display = 'grid';
+            }
 
             // Mount the view template
             this.viewport.innerHTML = view.template();
