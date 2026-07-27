@@ -4,65 +4,37 @@
 
 import { signUpUser } from '../supabase.js';
 
-// Complete static list of all 50 U.S. States
-const US_STATES = [
-    { code: "AL", name: "Alabama" },
-    { code: "AK", name: "Alaska" },
-    { code: "AZ", name: "Arizona" },
-    { code: "AR", name: "Arkansas" },
-    { code: "CA", name: "California" },
-    { code: "CO", name: "Colorado" },
-    { code: "CT", name: "Connecticut" },
-    { code: "DE", name: "Delaware" },
-    { code: "FL", name: "Florida" },
-    { code: "GA", name: "Georgia" },
-    { code: "HI", name: "Hawaii" },
-    { code: "ID", name: "Idaho" },
-    { code: "IL", name: "Illinois" },
-    { code: "IN", name: "Indiana" },
-    { code: "IA", name: "Iowa" },
-    { code: "KS", name: "Kansas" },
-    { code: "KY", name: "Kentucky" },
-    { code: "LA", name: "Louisiana" },
-    { code: "ME", name: "Maine" },
-    { code: "MD", name: "Maryland" },
-    { code: "MA", name: "Massachusetts" },
-    { code: "MI", name: "Michigan" },
-    { code: "MN", name: "Minnesota" },
-    { code: "MS", name: "Mississippi" },
-    { code: "MO", name: "Missouri" },
-    { code: "MT", name: "Montana" },
-    { code: "NE", name: "Nebraska" },
-    { code: "NV", name: "Nevada" },
-    { code: "NH", name: "New Hampshire" },
-    { code: "NJ", name: "New Jersey" },
-    { code: "NM", name: "New Mexico" },
-    { code: "NY", name: "New York" },
-    { code: "NC", name: "North Carolina" },
-    { code: "ND", name: "North Dakota" },
-    { code: "OH", name: "Ohio" },
-    { code: "OK", name: "Oklahoma" },
-    { code: "OR", name: "Oregon" },
-    { code: "PA", name: "Pennsylvania" },
-    { code: "RI", name: "Rhode Island" },
-    { code: "SC", name: "South Carolina" },
-    { code: "SD", name: "South Dakota" },
-    { code: "TN", name: "Tennessee" },
-    { code: "TX", name: "Texas" },
-    { code: "UT", name: "Utah" },
-    { code: "VT", name: "Vermont" },
-    { code: "VA", name: "Virginia" },
-    { code: "WA", name: "Washington" },
-    { code: "WV", name: "West Virginia" },
-    { code: "WI", name: "Wisconsin" },
-    { code: "WY", name: "Wyoming" }
+// Local instant-lookup database of common schools (works offline)
+const LOCAL_SCHOOLS_DATABASE = [
+    { name: "Stanford University", type: "college", city: "Stanford", state: "CA" },
+    { name: "University of California, Berkeley", type: "college", city: "Berkeley", state: "CA" },
+    { name: "San Jose State University", type: "college", city: "San Jose", state: "CA" },
+    { name: "Santa Clara University", type: "college", city: "Santa Clara", state: "CA" },
+    { name: "University of California, Los Angeles", type: "college", city: "Los Angeles", state: "CA" },
+    { name: "New York University", type: "college", city: "New York", state: "NY" },
+    { name: "Columbia University", type: "college", city: "New York", state: "NY" },
+    { name: "Massachusetts Institute of Technology", type: "college", city: "Cambridge", state: "MA" },
+    { name: "Harvard University", type: "college", city: "Cambridge", state: "MA" },
+    
+    { name: "Palo Alto High School", type: "highschool", city: "Palo Alto", state: "CA" },
+    { name: "Henry M. Gunn High School", type: "highschool", city: "Palo Alto", state: "CA" },
+    { name: "Menlo-Atherton High School", type: "highschool", city: "Atherton", state: "CA" },
+    { name: "Berkeley High School", type: "highschool", city: "Berkeley", state: "CA" },
+    { name: "Stuyvesant High School", type: "highschool", city: "New York", state: "NY" },
+    { name: "Bronx High School of Science", type: "highschool", city: "New York", state: "NY" },
+    { name: "Cambridge Rindge and Latin School", type: "highschool", city: "Cambridge", state: "MA" }
 ];
 
 export const signupView = {
     currentStep: 1,
     educationLevel: 'college', // 'college' | 'highschool'
     debounceTimer: null,
-    activeAutocompleteTarget: null, // 'district' | 'school'
+
+    // Returns merged local and user-created custom schools
+    getMergedSchoolsDatabase() {
+        const customSchools = JSON.parse(localStorage.getItem('alcove_custom_schools') || '[]');
+        return [...LOCAL_SCHOOLS_DATABASE, ...customSchools];
+    },
 
     template() {
         return `
@@ -277,7 +249,6 @@ export const signupView = {
         try {
             let searchStr = nameQuery;
             if (districtFilter) {
-                // Constrain the Wikipedia search to return only schools matching that district!
                 searchStr = `${nameQuery} ${districtFilter}`;
             } else {
                 searchStr = `${nameQuery} High School`;
@@ -427,11 +398,28 @@ export const signupView = {
             clearTimeout(this.debounceTimer);
             this.debounceTimer = setTimeout(async () => {
                 let matches = [];
+                const mergedDB = this.getMergedSchoolsDatabase();
+                
+                // Fetch local matching entries
+                const cleanQuery = query.toLowerCase();
+                let localMatches = mergedDB.filter(s => 
+                    s.type === this.educationLevel && 
+                    s.name.toLowerCase().includes(cleanQuery)
+                );
+
                 if (this.educationLevel === 'college') {
-                    matches = await this.queryUniversitiesAPI(query);
+                    const externalMatches = await this.queryUniversitiesAPI(query);
+                    const mergedMap = new Map();
+                    localMatches.forEach(item => mergedMap.set(item.name.toLowerCase(), item));
+                    externalMatches.forEach(item => mergedMap.set(item.name.toLowerCase(), item));
+                    matches = Array.from(mergedMap.values());
                 } else {
                     const selectedDistrict = districtInput.value.trim();
-                    matches = await this.queryHighSchoolsAPI(query, selectedDistrict);
+                    const externalMatches = await this.queryHighSchoolsAPI(query, selectedDistrict);
+                    const mergedMap = new Map();
+                    localMatches.forEach(item => mergedMap.set(item.name.toLowerCase(), item));
+                    externalMatches.forEach(item => mergedMap.set(item.name.toLowerCase(), item));
+                    matches = Array.from(mergedMap.values());
                 }
 
                 renderSchoolRows(matches);
@@ -439,14 +427,16 @@ export const signupView = {
         };
 
         const renderSchoolRows = (matches) => {
+            let listHTML = '';
+            
             if (matches.length === 0) {
-                schoolBox.innerHTML = `
+                listHTML += `
                     <div style="padding: 10px; font-size:11.5px; color:var(--text-muted); text-align:center;">
                         No matching ${this.educationLevel === 'highschool' ? 'high schools' : 'colleges'} found.
                     </div>
                 `;
             } else {
-                schoolBox.innerHTML = matches.map(s => {
+                listHTML += matches.map(s => {
                     const subtitle = s.city ? `${s.city}${s.state ? `, ${s.state}` : ''}` : 'US School';
                     return `
                         <div class="autocomplete-school-row" data-name="${s.name}" style="padding: 8px 12px; cursor: pointer; font-size:12px; border-bottom:1px solid var(--border-color); color:var(--text-primary); transition:var(--transition-smooth); display:flex; justify-content:space-between;">
@@ -455,16 +445,39 @@ export const signupView = {
                         </div>
                     `;
                 }).join('');
-
-                schoolBox.querySelectorAll('.autocomplete-school-row').forEach(row => {
-                    row.onmouseenter = () => { row.style.backgroundColor = 'var(--card-hover-bg)'; };
-                    row.onmouseleave = () => { row.style.backgroundColor = 'transparent'; };
-                    row.onclick = () => {
-                        schoolInput.value = row.getAttribute('data-name');
-                        schoolBox.style.display = 'none';
-                    };
-                });
             }
+
+            // Append custom manual register link at bottom of dropdown
+            listHTML += `
+                <div id="manual-register-trigger" style="padding: 10px 12px; cursor: pointer; font-size:12px; text-align:center; font-weight:600; color:var(--color-primary); background-color:var(--bg-secondary); border-top:1px solid var(--border-color); transition:var(--transition-smooth);">
+                     Can't find your school? Add it manually
+                </div>
+            `;
+
+            schoolBox.innerHTML = listHTML;
+
+            // Bind click rows
+            schoolBox.querySelectorAll('.autocomplete-school-row').forEach(row => {
+                row.onmouseenter = () => { row.style.backgroundColor = 'var(--card-hover-bg)'; };
+                row.onmouseleave = () => { row.style.backgroundColor = 'transparent'; };
+                row.onclick = () => {
+                    schoolInput.value = row.getAttribute('data-name');
+                    schoolBox.style.display = 'none';
+                };
+            });
+
+            // Bind manual registration link click
+            const trigger = document.getElementById('manual-register-trigger');
+            if (trigger) {
+                trigger.onmouseenter = () => { trigger.style.backgroundColor = 'var(--bg-tertiary)'; };
+                trigger.onmouseleave = () => { trigger.style.backgroundColor = 'var(--bg-secondary)'; };
+                trigger.onclick = (e) => {
+                    e.stopPropagation();
+                    schoolBox.style.display = 'none';
+                    this.openCustomSchoolModal();
+                };
+            }
+
             schoolBox.style.display = 'block';
         };
 
@@ -496,14 +509,28 @@ export const signupView = {
 
                 window.app.showToast(`Locating schools near ${city}, ${state}...`, "info");
 
+                const mergedDB = this.getMergedSchoolsDatabase();
+                let localMatches = mergedDB.filter(s => 
+                    s.type === this.educationLevel && 
+                    s.state === state && 
+                    s.city.toLowerCase() === city.toLowerCase()
+                );
+
                 let results = [];
                 if (this.educationLevel === 'college') {
-                    results = await this.queryUniversitiesAPI(city);
+                    const externalMatches = await this.queryUniversitiesAPI(city);
+                    const mergedMap = new Map();
+                    localMatches.forEach(item => mergedMap.set(item.name.toLowerCase(), item));
+                    externalMatches.forEach(item => mergedMap.set(item.name.toLowerCase(), item));
+                    results = Array.from(mergedMap.values());
                 } else {
                     const selectedDistrict = districtInput.value.trim();
-                    // Query schools inside their local city & district!
                     const queryStr = selectedDistrict ? `${city} ${selectedDistrict}` : `${city} High School`;
-                    results = await this.queryHighSchoolsAPI(queryStr);
+                    const externalMatches = await this.queryHighSchoolsAPI(queryStr);
+                    const mergedMap = new Map();
+                    localMatches.forEach(item => mergedMap.set(item.name.toLowerCase(), item));
+                    externalMatches.forEach(item => mergedMap.set(item.name.toLowerCase(), item));
+                    results = Array.from(mergedMap.values());
                 }
 
                 renderSchoolRows(results);
@@ -550,6 +577,83 @@ export const signupView = {
                 submitBtn.disabled = false;
                 submitBtn.textContent = "Complete Setup";
             }
+        };
+    },
+
+    // Injects floating modal to write school properties manually
+    openCustomSchoolModal() {
+        // Destroy existing modal if loaded
+        const exist = document.getElementById('custom-school-modal-overlay');
+        if (exist) exist.remove();
+
+        const currentDistrict = document.getElementById('reg-district').value;
+        const currentCity = document.getElementById('reg-city').value;
+        const currentState = document.getElementById('reg-state').value;
+
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay active';
+        modal.id = 'custom-school-modal-overlay';
+        modal.innerHTML = `
+            <div class="modal-content glass-panel" style="max-width:380px; padding:24px; position:relative; background:var(--panel-bg); border:1px solid var(--border-color); border-radius:6px; box-shadow:0 12px 32px rgba(0,0,0,0.15);">
+                <button id="custom-school-close" class="close-modal-btn" style="position:absolute; top:12px; right:14px; font-size:18px; border:none; background:none; cursor:pointer; color:var(--text-muted);">&times;</button>
+                
+                <h3 class="font-heading font-bold mb-1" style="font-size:15px; color:var(--text-primary);">Add Custom School</h3>
+                <p class="text-muted mb-3" style="font-size:11px;">Register a school not listed in standard directories.</p>
+                
+                <form id="custom-school-form" style="display:flex; flex-direction:column; gap:10px;">
+                    <div class="form-group">
+                        <label>School Name</label>
+                        <input type="text" id="custom-name" placeholder="e.g. West Palo Alto Academy" required style="width:100%; padding:6px 8px; border-radius:4px; border:1px solid var(--border-color); background:var(--input-bg); color:var(--text-primary); font-size:12.5px;">
+                    </div>
+                    <div class="form-group" style="display: ${this.educationLevel === 'highschool' ? 'block' : 'none'};">
+                        <label>School District</label>
+                        <input type="text" id="custom-district" placeholder="e.g. Palo Alto Unified" value="${currentDistrict}" style="width:100%; padding:6px 8px; border-radius:4px; border:1px solid var(--border-color); background:var(--input-bg); color:var(--text-primary); font-size:12.5px;">
+                    </div>
+                    <div class="form-group">
+                        <label>Location / Address</label>
+                        <input type="text" id="custom-address" placeholder="e.g. 120 University Ave" value="${currentCity ? `${currentCity}, ${currentState}` : ''}" required style="width:100%; padding:6px 8px; border-radius:4px; border:1px solid var(--border-color); background:var(--input-bg); color:var(--text-primary); font-size:12.5px;">
+                    </div>
+                    
+                    <div class="d-flex gap-2" style="margin-top:12px; display:flex;">
+                        <button type="button" class="btn btn-secondary flex-1" id="custom-cancel-btn" style="padding:6px; font-size:12px;">Cancel</button>
+                        <button type="submit" class="btn btn-primary flex-1" style="padding:6px; font-size:12px;">Save & Select</button>
+                    </div>
+                </form>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        const destroy = () => modal.remove();
+
+        document.getElementById('custom-school-close').onclick = destroy;
+        document.getElementById('custom-cancel-btn').onclick = destroy;
+        modal.onclick = (e) => { if (e.target === modal) destroy(); };
+
+        document.getElementById('custom-school-form').onsubmit = (e) => {
+            e.preventDefault();
+            const customName = document.getElementById('custom-name').value.trim();
+            const customDistrict = document.getElementById('custom-district') ? document.getElementById('custom-district').value.trim() : '';
+            const customAddress = document.getElementById('custom-address').value.trim();
+
+            const customList = JSON.parse(localStorage.getItem('alcove_custom_schools') || '[]');
+            
+            const newSchool = {
+                name: customName,
+                type: this.educationLevel,
+                city: customAddress.split(',')[0]?.trim() || currentCity,
+                state: currentState,
+                district: customDistrict,
+                address: customAddress
+            };
+
+            customList.push(newSchool);
+            localStorage.setItem('alcove_custom_schools', JSON.stringify(customList));
+
+            // Populate the signup form field
+            document.getElementById('reg-school').value = customName;
+            
+            window.app.showToast(`Saved "${customName}" successfully!`, "success");
+            destroy();
         };
     },
 
