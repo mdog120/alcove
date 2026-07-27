@@ -2,6 +2,13 @@
    Alcove Data Store & LocalStorage Coordinator
    ========================================================================== */
 
+import { getSupabase } from './supabase.js';
+
+const WORKSPACE_KEYS = [
+    'courses', 'tasks', 'chats', 'partners', 'notes', 'library_notes',
+    'marketplace', 'clubs', 'events'
+];
+
 const MOCK_COURSES = [
     { id: "cs-106b", code: "CS 106B", name: "Programming Abstractions", credits: 5, time: "Tue/Thu 1:30 PM", room: "Gates Building 104", grade: "A", type: "regular", color: "indigo" },
     { id: "math-51", code: "MATH 51", name: "Linear Algebra & Calculus", credits: 5, time: "Mon/Wed/Fri 10:30 AM", room: "Math Corner Room 20", grade: "B+", type: "regular", color: "amber" },
@@ -101,6 +108,90 @@ export const store = {
 
     // Reactive state triggers
     listeners: {},
+    cloudUserId: null,
+    cloudSyncTimer: null,
+
+    async connectCloudWorkspace(userId) {
+        this.cloudUserId = userId;
+        const sb = getSupabase();
+        if (!sb || !userId) return false;
+
+        try {
+            const { data, error } = await sb
+                .from('workspace_data')
+                .select('data')
+                .eq('user_id', userId)
+                .maybeSingle();
+            if (error) throw error;
+
+            if (data?.data && Object.keys(data.data).length > 0) {
+                WORKSPACE_KEYS.forEach(key => {
+                    if (data.data[key] !== undefined) {
+                        localStorage.setItem(`alcove_${key}`, JSON.stringify(data.data[key]));
+                    }
+                });
+                return true;
+            }
+
+            // First signed-in session: preserve the student's existing local work.
+            await this.saveCloudWorkspace();
+            return false;
+        } catch (error) {
+            console.warn('Could not load Alcove workspace from Supabase:', error.message);
+            return false;
+        }
+    },
+
+    disconnectCloudWorkspace() {
+        this.cloudUserId = null;
+        if (this.cloudSyncTimer) clearTimeout(this.cloudSyncTimer);
+        this.cloudSyncTimer = null;
+    },
+
+    workspaceSnapshot() {
+        // Initialize every collection before taking the first cloud snapshot.
+        this.getCourses();
+        this.getTasks();
+        this.getMessages('cs-106b');
+        this.getPartners();
+        this.getNotes();
+        this.getLibraryNotes();
+        this.getMarketplace();
+        this.getClubs();
+        this.getEvents();
+
+        return WORKSPACE_KEYS.reduce((snapshot, key) => {
+            const raw = localStorage.getItem(`alcove_${key}`);
+            if (raw) snapshot[key] = JSON.parse(raw);
+            return snapshot;
+        }, {});
+    },
+
+    async saveCloudWorkspace() {
+        const sb = getSupabase();
+        if (!sb || !this.cloudUserId) return;
+
+        try {
+            const { error } = await sb.from('workspace_data').upsert({
+                user_id: this.cloudUserId,
+                data: this.workspaceSnapshot()
+            });
+            if (error) throw error;
+        } catch (error) {
+            console.warn('Could not save Alcove workspace to Supabase:', error.message);
+        }
+    },
+
+    scheduleCloudSync() {
+        if (!this.cloudUserId) return;
+        if (this.cloudSyncTimer) clearTimeout(this.cloudSyncTimer);
+        this.cloudSyncTimer = setTimeout(() => this.saveCloudWorkspace(), 500);
+    },
+
+    persistWorkspaceValue(key, value) {
+        localStorage.setItem(`alcove_${key}`, JSON.stringify(value));
+        this.scheduleCloudSync();
+    },
 
     subscribe(event, callback) {
         if (!this.listeners[event]) this.listeners[event] = [];
@@ -119,7 +210,7 @@ export const store = {
     },
 
     saveCourses(courses) {
-        localStorage.setItem("alcove_courses", JSON.stringify(courses));
+        this.persistWorkspaceValue('courses', courses);
         this.emit("courses_changed", courses);
     },
 
@@ -128,7 +219,7 @@ export const store = {
     },
 
     saveTasks(tasks) {
-        localStorage.setItem("alcove_tasks", JSON.stringify(tasks));
+        this.persistWorkspaceValue('tasks', tasks);
         this.emit("tasks_changed", tasks);
     },
 
@@ -153,7 +244,7 @@ export const store = {
         };
 
         chats[channelId].push(newMsg);
-        localStorage.setItem("alcove_chats", JSON.stringify(chats));
+        this.persistWorkspaceValue('chats', chats);
         this.emit(`chat_${channelId}`, newMsg);
         return newMsg;
     },
@@ -167,7 +258,7 @@ export const store = {
     },
 
     saveNotes(notes) {
-        localStorage.setItem("alcove_notes", JSON.stringify(notes));
+        this.persistWorkspaceValue('notes', notes);
         this.emit("notes_changed", notes);
     },
 
@@ -176,7 +267,7 @@ export const store = {
     },
 
     saveLibraryNotes(libNotes) {
-        localStorage.setItem("alcove_library_notes", JSON.stringify(libNotes));
+        this.persistWorkspaceValue('library_notes', libNotes);
         this.emit("lib_notes_changed", libNotes);
     },
 
@@ -185,7 +276,7 @@ export const store = {
     },
 
     saveMarketplace(marketplace) {
-        localStorage.setItem("alcove_marketplace", JSON.stringify(marketplace));
+        this.persistWorkspaceValue('marketplace', marketplace);
         this.emit("marketplace_changed", marketplace);
     },
 
@@ -194,7 +285,7 @@ export const store = {
     },
 
     saveClubs(clubs) {
-        localStorage.setItem("alcove_clubs", JSON.stringify(clubs));
+        this.persistWorkspaceValue('clubs', clubs);
         this.emit("clubs_changed", clubs);
     },
 
@@ -203,7 +294,7 @@ export const store = {
     },
 
     saveEvents(events) {
-        localStorage.setItem("alcove_events", JSON.stringify(events));
+        this.persistWorkspaceValue('events', events);
         this.emit("events_changed", events);
     },
 

@@ -200,18 +200,25 @@ class AppController {
             if (session) {
                 // User is authenticated
                 const profile = await getUserProfile(session.user);
-                this.activateUser(profile);
+                await this.activateUser(profile);
             } else {
                 // User is unauthenticated / logged out
                 this.user = null;
+                store.disconnectCloudWorkspace();
                 this.handleRoute();
             }
         });
     }
 
-    activateUser(profile) {
+    async activateUser(profile) {
         this.user = profile;
         Object.assign(store.user, profile);
+
+        if (profile.isDemo) {
+            store.disconnectCloudWorkspace();
+        } else {
+            await store.connectCloudWorkspace(profile.id);
+        }
 
         document.getElementById('sidebar-user-name').textContent = profile.name;
         document.getElementById('sidebar-user-school').textContent = profile.school;
@@ -232,7 +239,7 @@ class AppController {
         }
     }
 
-    startDemoSession() {
+    async startDemoSession() {
         const profile = {
             id: 'local-demo',
             name: 'Alex Rivera',
@@ -242,13 +249,14 @@ class AppController {
             isDemo: true
         };
         localStorage.setItem('alcove_demo_user', JSON.stringify(profile));
-        this.activateUser(profile);
+        await this.activateUser(profile);
         this.showToast('Demo workspace ready — changes are saved on this device.', 'success');
     }
 
     endDemoSession() {
         localStorage.removeItem('alcove_demo_user');
         this.user = null;
+        store.disconnectCloudWorkspace();
         this.initSupabaseListener();
         window.location.hash = '#login';
         this.showToast('Signed out of the demo workspace.', 'info');
