@@ -915,3 +915,24 @@ button {
     transform: translateY(0);
 }
 
+/* ==========================================================================
+   8a. Landing Page Layout Overrides
+   ========================================================================== */
+
+.app-container.landing-active {
+    grid-template-columns: 1fr !important;
+    display: block !important;
+}
+
+.app-container.landing-active .sidebar,
+.app-container.landing-active .top-header {
+    display: none !important;
+}
+
+.app-container.landing-active .viewport-content {
+    padding: 0 !important;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+

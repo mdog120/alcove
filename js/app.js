@@ -164,7 +164,9 @@ class AppController {
         if (!sb) {
             // Fallback for standalone mock operations if client config fails
             this.showToast("Database client offline. Using mock storage.", "warning");
-            document.getElementById('main-app-container').style.display = 'grid';
+            const appContainer = document.getElementById('main-app-container');
+            appContainer.classList.remove('landing-active');
+            appContainer.style.display = 'grid';
             this.handleRoute();
             return;
         }
@@ -188,7 +190,9 @@ class AppController {
                 `;
 
                 // Display application canvas
-                document.getElementById('main-app-container').style.display = 'grid';
+                const appContainer = document.getElementById('main-app-container');
+                appContainer.classList.remove('landing-active');
+                appContainer.style.display = 'grid';
 
                 // Route away from login if needed
                 if (!window.location.hash || window.location.hash === '#login') {
@@ -199,7 +203,11 @@ class AppController {
             } else {
                 // User is unauthenticated / logged out
                 this.user = null;
-                document.getElementById('main-app-container').style.display = 'none';
+                
+                // Apply landing page grid overrides and show viewport
+                const appContainer = document.getElementById('main-app-container');
+                appContainer.classList.add('landing-active');
+                appContainer.style.display = 'block';
                 
                 window.location.hash = '#login';
                 this.handleRoute();
