@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alcove | The All-in-One Student Hub</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+    <!-- App Layout Shell -->
+    <div class="app-container">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-logo">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <span class="brand-name">Alcove</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active" data-view="dashboard">
+                    <i class="fa-solid fa-house-chimney"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#planner" class="nav-item" data-view="planner">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <span>Planner & Calendar</span>
+                </a>
+                <a href="#gpa" class="nav-item" data-view="gpa">
+                    <i class="fa-solid fa-calculator"></i>
+                    <span>GPA Calculator</span>
+                </a>
+                <a href="#chat" class="nav-item" data-view="chat">
+                    <i class="fa-solid fa-comments"></i>
+                    <span>Class Chats</span>
+                </a>
+                <a href="#notes" class="nav-item" data-view="notes">
+                    <i class="fa-solid fa-note-sticky"></i>
+                    <span>Notes Share</span>
+                </a>
+                <a href="#marketplace" class="nav-item" data-view="marketplace">
+                    <i class="fa-solid fa-store"></i>
+                    <span>Marketplace</span>
+                </a>
+                <a href="#events" class="nav-item" data-view="events">
+                    <i class="fa-solid fa-champagne-glasses"></i>
+                    <span>Campus Hub</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button id="theme-toggle" class="theme-btn" aria-label="Toggle dark mode">
+                    <i class="fa-solid fa-moon dark-icon"></i>
+                    <i class="fa-solid fa-sun light-icon"></i>
+                    <span>Theme</span>
+                </button>
+                
+                <div class="user-profile">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="Student Profile" class="avatar">
+                    <div class="user-info">
+                        <span class="user-name">Alex Rivera</span>
+                        <span class="user-school">Stanford '27</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="main-wrapper">
+            <!-- Header bar -->
+            <header class="top-header">
+                <div class="header-left">
+                    <div class="school-selector">
+                        <i class="fa-solid fa-university text-indigo"></i>
+                        <span class="current-school">Stanford University</span>
+                    </div>
+                    <div class="header-search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="global-search" placeholder="Search classes, events, textbooks...">
+                    </div>
+                </div>
+
+                <div class="header-right">
+                    <!-- Notification Tray -->
+                    <div class="header-action notification-bell" id="notification-trigger">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-badge" id="notif-badge">3</span>
+                        <!-- Dropdown -->
+                        <div class="notification-dropdown" id="notif-dropdown">
+                            <div class="notif-header">
+                                <h3>Notifications</h3>
+                                <button id="mark-all-read">Mark all as read</button>
+                            </div>
+                            <div class="notif-list" id="notif-list-container">
+                                <!-- Dynamic notifications -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Today's date widget -->
+                    <div class="header-date">
+                        <i class="fa-regular fa-calendar"></i>
+                        <span id="live-date">July 27, 2026</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dynamic Viewport -->
+            <main id="app-viewport" class="viewport-content">
+                <!-- Javascript will inject files here -->
+            </main>
+        </div>
+
+    </div>
+
+    <!-- Add Task Modal -->
+    <div id="task-modal" class="modal-overlay">
+        <div class="modal-content glass-panel animate-zoom">
+            <div class="modal-header">
+                <h3 id="task-modal-title">Add Assignment / Exam</h3>
+                <button class="close-modal-btn" data-close="task-modal">&times;</button>
+            </div>
+            <form id="task-form">
+                <input type="hidden" id="task-id">
+                <div class="form-group">
+                    <label for="task-title">Title</label>
+                    <input type="text" id="task-title" placeholder="e.g. Midterm Prep, Problem Set 3" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="task-course">Course</label>
+                        <select id="task-course" required>
+                            <!-- Dynamic Course options -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-type">Type</label>
+                        <select id="task-type" required>
+                            <option value="assignment">Assignment</option>
+                            <option value="exam">Exam</option>
+                            <option value="project">Project</option>
+                            <option value="reading">Reading</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="task-due">Due Date & Time</label>
+                        <input type="datetime-local" id="task-due" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-priority">Priority</label>
+                        <select id="task-priority" required>
+                            <option value="low">🟢 Low</option>
+                            <option value="medium" selected>🟡 Medium</option>
+                            <option value="high">🔴 High</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="task-notes">Notes</label>
+                    <textarea id="task-notes" placeholder="Any details, links or checklists..."></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" data-close="task-modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sell Item Modal -->
+    <div id="marketplace-modal" class="modal-overlay">
+        <div class="modal-content glass-panel animate-zoom">
+            <div class="modal-header">
+                <h3>List Book or Gear for Sale</h3>
+                <button class="close-modal-btn" data-close="marketplace-modal">&times;</button>
+            </div>
+            <form id="marketplace-form">
+                <div class="form-group">
+                    <label for="item-title">Item Title</label>
+                    <input type="text" id="item-title" placeholder="e.g. Introduction to Algorithms (4th Ed)" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="item-price">Price ($)</label>
+                        <input type="number" id="item-price" placeholder="45" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="item-condition">Condition</label>
+                        <select id="item-condition" required>
+                            <option value="new">Like New</option>
+                            <option value="good" selected>Very Good</option>
+                            <option value="fair">Fair (Has marks)</option>
+                            <option value="worn">Worn</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="item-course">Course Code (Optional)</label>
+                        <input type="text" id="item-course" placeholder="e.g. CS 106B">
+                    </div>
+                    <div class="form-group">
+                        <label for="item-category">Category</label>
+                        <select id="item-category" required>
+                            <option value="Textbooks">Textbooks</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Lab Gear">Lab Gear</option>
+                            <option value="Dorm Life">Dorm Life</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="item-image-select">Item Thumbnail Icon / Color</label>
+                    <select id="item-image-select">
+                        <option value="book-blue">📚 Blue Book</option>
+                        <option value="book-red">📚 Red Book</option>
+                        <option value="book-green">📚 Green Book</option>
+                        <option value="laptop">💻 Laptop/Electronics</option>
+                        <option value="calculator">🧮 Calculator</option>
+                        <option value="flask">🧪 Flask/Chemistry Kit</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="item-desc">Description</label>
+                    <textarea id="item-desc" placeholder="Details about binding, pages, pickup location..." required></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" data-close="marketplace-modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Publish Listing</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Event Modal -->
+    <div id="event-modal" class="modal-overlay">
+        <div class="modal-content glass-panel animate-zoom">
+            <div class="modal-header">
+                <h3>Post Campus Event / Club Meetup</h3>
+                <button class="close-modal-btn" data-close="event-modal">&times;</button>
+            </div>
+            <form id="event-form">
+                <div class="form-group">
+                    <label for="event-title">Event Title</label>
+                    <input type="text" id="event-title" placeholder="e.g. CS Society Hackathon Kickoff" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="event-club">Hosting Club / Group</label>
+                        <select id="event-club" required>
+                            <!-- Dynamic club options -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="event-location">Location</label>
+                        <input type="text" id="event-location" placeholder="e.g. Gates Building Room 104" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="event-date">Date & Time</label>
+                        <input type="datetime-local" id="event-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="event-tag">Category</label>
+                        <select id="event-tag" required>
+                            <option value="Academic">Academic</option>
+                            <option value="Social">Social</option>
+                            <option value="Career">Career / Professional</option>
+                            <option value="Arts">Arts & Culture</option>
+                            <option value="Sports">Sports / Wellness</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="event-desc">Event Description</label>
+                    <textarea id="event-desc" placeholder="Details, schedule, foods provided, guest details..." required></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" data-close="event-modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Post Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Application JavaScript (Module entry point) -->
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
