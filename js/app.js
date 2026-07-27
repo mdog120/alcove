@@ -1,8 +1,11 @@
 /* ==========================================================================
-   Alcove Core App Controller & Client-Side Router
+   Alcove Core App Controller & Client-Side Router (Supabase Edition)
    ========================================================================== */
 
 import { store } from './store.js';
+import { getSupabase, getUserProfile, signOutUser } from './supabase.js';
+
+import { loginView } from './views/login.js';
 import { dashboardView } from './views/dashboard.js';
 import { plannerView } from './views/planner.js';
 import { gpaView } from './views/gpa.js';
@@ -13,6 +16,7 @@ import { eventsView } from './views/events.js';
 
 // Route register
 const ROUTES = {
+    login: loginView,
     dashboard: dashboardView,
     planner: plannerView,
     gpa: gpaView,
@@ -35,26 +39,30 @@ class AppController {
         this.liveDateEl = document.getElementById('live-date');
         
         this.currentViewName = null;
+        this.user = null; // Populated from Supabase Auth Profile
     }
 
     init() {
         // Theme initialization
-        const savedTheme = localStorage.getItem('alcove_theme') || 'dark';
+        const savedTheme = localStorage.getItem('alcove_theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
         this.themeToggleBtn.addEventListener('click', () => this.toggleTheme());
 
         // Routing listeners
         window.addEventListener('hashchange', () => this.handleRoute());
+
         window.addEventListener('DOMContentLoaded', () => {
-            this.handleRoute();
             this.updateDateTime();
             this.renderNotifications();
             setInterval(() => this.updateDateTime(), 60000); // update date every minute
+
+            // Orchestrate 3D Book Intro Animation
+            this.orchestrateIntroAnimation();
         });
 
         // Global Modals listeners
         document.querySelectorAll('[data-close]').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+            btn.addEventListener('click', () => {
                 const modalId = btn.getAttribute('data-close');
                 this.closeModal(modalId);
             });
@@ -76,9 +84,11 @@ class AppController {
         this.notifDropdown.addEventListener('click', (e) => e.stopPropagation());
 
         this.markAllReadBtn.addEventListener('click', () => {
-            store.user.notifications.forEach(n => n.read = true);
-            this.renderNotifications();
-            this.showToast("All notifications marked as read", "success");
+            if (this.user) {
+                store.user.notifications.forEach(n => n.read = true);
+                this.renderNotifications();
+                this.showToast("All notifications marked as read", "success");
+            }
         });
 
         // Register for store notifications
@@ -99,11 +109,117 @@ class AppController {
         this.globalSearch.addEventListener('keyup', (e) => {
             this.handleGlobalSearch(e.target.value.toLowerCase());
         });
+
+        // Signout click handler on User Profile Card
+        const profileCard = document.querySelector('.user-profile');
+        if (profileCard) {
+            profileCard.style.cursor = 'pointer';
+            profileCard.addEventListener('click', () => {
+                if (confirm("Would you like to sign out of Alcove?")) {
+                    signOutUser().then(() => {
+                        this.showToast("Logged out successfully", "info");
+                    });
+                }
+            });
+        }
+    }
+
+    // Orchestrates the 3D book animation opening
+    orchestrateIntroAnimation() {
+        const overlay = document.getElementById('intro-overlay');
+        const book = document.getElementById('intro-book');
+        const title = document.getElementById('intro-title');
+        
+        const introPlayed = sessionStorage.getItem('alcove_intro_played') === 'true';
+
+        if (introPlayed && overlay) {
+            // Already played in this session - skip animation entirely
+            overlay.remove();
+            this.initSupabaseListener();
+        } else {
+            // Play custom 3D opening animations
+            setTimeout(() => {
+                if (book) book.classList.add('opened');
+            }, 600);
+
+            setTimeout(() => {
+                if (title) title.classList.add('reveal');
+            }, 1200);
+
+            setTimeout(() => {
+                if (overlay) overlay.classList.add('fade-out');
+            }, 3600);
+
+            setTimeout(() => {
+                if (overlay) overlay.remove();
+                sessionStorage.setItem('alcove_intro_played', 'true');
+                this.initSupabaseListener();
+            }, 4400);
+        }
+    }
+
+    // Initializes Supabase session checking and Auth hooks
+    initSupabaseListener() {
+        const sb = getSupabase();
+        if (!sb) {
+            // Fallback for standalone mock operations if client config fails
+            this.showToast("Database client offline. Using mock storage.", "warning");
+            document.getElementById('main-app-container').style.display = 'grid';
+            this.handleRoute();
+            return;
+        }
+
+        // On session change
+        sb.auth.onAuthStateChange(async (event, session) => {
+            if (session) {
+                // User is authenticated
+                const profile = await getUserProfile(session.user);
+                this.user = profile;
+
+                // Sync sidebar profile card DOM elements
+                document.getElementById('sidebar-user-name').textContent = profile.name;
+                document.getElementById('sidebar-user-school').textContent = profile.school;
+                document.getElementById('sidebar-avatar').src = profile.avatar;
+                
+                // Sync header school tag
+                document.getElementById('header-school-name').innerHTML = `
+                    <span class="school-selector-icon"><i class="fa-regular fa-building"></i></span>
+                    ${profile.school}
+                `;
+
+                // Display application canvas
+                document.getElementById('main-app-container').style.display = 'grid';
+
+                // Route away from login if needed
+                if (!window.location.hash || window.location.hash === '#login') {
+                    window.location.hash = '#dashboard';
+                } else {
+                    this.handleRoute();
+                }
+            } else {
+                // User is unauthenticated / logged out
+                this.user = null;
+                document.getElementById('main-app-container').style.display = 'none';
+                
+                window.location.hash = '#login';
+                this.handleRoute();
+            }
+        });
     }
 
     // Hash routing controller
     handleRoute() {
-        const hash = window.location.hash.substring(1) || 'dashboard';
+        let hash = window.location.hash.substring(1) || 'dashboard';
+        
+        // Auth gate guard
+        if (!this.user && hash !== 'login') {
+            window.location.hash = '#login';
+            hash = 'login';
+        } else if (this.user && hash === 'login') {
+            window.location.hash = '#dashboard';
+            hash = 'dashboard';
+        }
+
         const view = ROUTES[hash];
 
         if (view) {
@@ -129,7 +245,7 @@ class AppController {
             this.viewport.scrollTop = 0;
         } else {
             // Fallback
-            window.location.hash = '#dashboard';
+            window.location.hash = this.user ? '#dashboard' : '#login';
         }
     }
 
@@ -168,21 +284,21 @@ class AppController {
 
         this.notifContainer.innerHTML = notifs.map(n => {
             let iconClass = "fa-bell";
-            let iconBg = "rgba(99, 102, 241, 0.1)";
+            let iconBg = "rgba(127, 154, 138, 0.1)";
             let iconColor = "var(--color-primary)";
 
             if (n.type === "chat") {
                 iconClass = "fa-comments";
-                iconBg = "rgba(168, 85, 247, 0.1)";
-                iconColor = "var(--color-secondary)";
+                iconBg = "rgba(127, 154, 138, 0.1)";
+                iconColor = "var(--color-primary)";
             } else if (n.type === "task") {
                 iconClass = "fa-calendar-days";
-                iconBg = "rgba(244, 63, 94, 0.1)";
+                iconBg = "rgba(235, 87, 87, 0.1)";
                 iconColor = "var(--color-rose)";
             } else if (n.type === "event") {
-                iconClass = "fa-champagne-glasses";
-                iconBg = "rgba(6, 182, 212, 0.1)";
-                iconColor = "var(--color-cyan)";
+                iconClass = "fa-flag";
+                iconBg = "rgba(127, 154, 138, 0.1)";
+                iconColor = "var(--color-primary)";
             }
 
             return `
@@ -246,7 +362,7 @@ class AppController {
             if (courses.length) {
                 resultsHTML += `
                     <div class="search-result-sec glass-panel p-4">
-                        <h3 class="mb-3 text-indigo"><i class="fa-solid fa-university"></i> Classes (${courses.length})</h3>
+                        <h3 class="mb-3 text-indigo" style="color:var(--color-primary) !important;"><i class="fa-regular fa-building"></i> Classes (${courses.length})</h3>
                         <div class="list-group">${courses.map(c => `
                             <div class="py-2 border-bottom">
                                 <strong class="text-primary">${c.code}</strong> - ${c.name}
@@ -260,7 +376,7 @@ class AppController {
             if (tasks.length) {
                 resultsHTML += `
                     <div class="search-result-sec glass-panel p-4">
-                        <h3 class="mb-3 text-rose"><i class="fa-solid fa-calendar-days"></i> Tasks (${tasks.length})</h3>
+                        <h3 class="mb-3 text-rose"><i class="fa-regular fa-calendar"></i> Tasks (${tasks.length})</h3>
                         <div class="list-group">${tasks.map(t => `
                             <div class="py-2 border-bottom">
                                 <strong class="text-primary">${t.title}</strong>
@@ -274,7 +390,7 @@ class AppController {
             if (libraryNotes.length) {
                 resultsHTML += `
                     <div class="search-result-sec glass-panel p-4">
-                        <h3 class="mb-3 text-cyan"><i class="fa-solid fa-note-sticky"></i> Shared Notes (${libraryNotes.length})</h3>
+                        <h3 class="mb-3 text-cyan" style="color:var(--color-primary) !important;"><i class="fa-regular fa-file-lines"></i> Shared Notes (${libraryNotes.length})</h3>
                         <div class="list-group">${libraryNotes.map(n => `
                             <div class="py-2 border-bottom">
                                 <strong class="text-primary">${n.title}</strong> (${n.course})
@@ -288,7 +404,7 @@ class AppController {
             if (books.length) {
                 resultsHTML += `
                     <div class="search-result-sec glass-panel p-4">
-                        <h3 class="mb-3 text-purple"><i class="fa-solid fa-store"></i> Marketplace (${books.length})</h3>
+                        <h3 class="mb-3 text-purple" style="color:var(--color-primary) !important;"><i class="fa-regular fa-handshake"></i> Marketplace (${books.length})</h3>
                         <div class="list-group">${books.map(b => `
                             <div class="py-2 border-bottom">
                                 <strong class="text-primary">${b.title}</strong> - $${b.price}

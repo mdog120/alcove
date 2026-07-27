@@ -12,13 +12,31 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- FontAwesome for monochrome regular/outline icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase Client CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/components.css">
 </head>
 <body>
+    <!-- Fullscreen 3D Book Intro Loading Animation Overlay -->
+    <div id="intro-overlay" class="intro-overlay">
+        <div class="book-container">
+            <div class="book" id="intro-book">
+                <div class="book-cover-back"></div>
+                <div class="book-page page-3"></div>
+                <div class="book-page page-2"></div>
+                <div class="book-page page-1"></div>
+                <div class="book-cover-front">
+                    <img src="logo.jpg" alt="Logo" class="cover-logo">
+                </div>
+            </div>
+        </div>
+        <div class="intro-title" id="intro-title">Alcove</div>
+    </div>
+
     <!-- App Layout Shell -->
-    <div class="app-container">
+    <div class="app-container" id="main-app-container" style="display: none;">
         
         <!-- Sidebar Navigation (Notion Style) -->
         <aside class="sidebar">
@@ -66,10 +84,10 @@
                 </button>
                 
                 <div class="user-profile">
-                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="Student Profile" class="avatar">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="Student Profile" class="avatar" id="sidebar-avatar">
                     <div class="user-info">
-                        <span class="user-name">Alex Rivera</span>
-                        <span class="user-school">Stanford '27</span>
+                        <span class="user-name" id="sidebar-user-name">Alex Rivera</span>
+                        <span class="user-school" id="sidebar-user-school">Stanford '27</span>
                     </div>
                 </div>
             </div>
@@ -82,7 +100,7 @@
                 <div class="header-left">
                     <div class="school-selector">
                         <span class="school-selector-icon"><i class="fa-regular fa-building"></i></span>
-                        <span class="current-school">Stanford University</span>
+                        <span class="current-school" id="header-school-name">Stanford University</span>
                     </div>
                     <div class="header-search">
                         <i class="fa-solid fa-magnifying-glass search-icon"></i>

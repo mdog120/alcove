@@ -779,3 +779,139 @@ button {
         display: none;
     }
 }
+
+/* ==========================================================================
+   8. Fullscreen 3D Book Intro Loading Animation
+   ========================================================================== */
+
+.intro-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: var(--bg-primary);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    opacity: 1;
+    transition: opacity 0.8s ease-in-out;
+}
+
+.intro-overlay.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.book-container {
+    perspective: 1000px;
+    width: 150px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.book {
+    width: 110px;
+    height: 150px;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: rotateX(25deg) rotateY(-20deg);
+    transition: transform 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Book opening state triggers */
+.book.opened {
+    transform: rotateX(20deg) rotateY(-10deg) scale(1.1);
+}
+
+.book-cover-front, .book-cover-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 2px 6px 6px 2px;
+    background-color: var(--color-primary); /* Sage Green */
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transform-origin: left center;
+}
+
+.book-cover-front {
+    z-index: 10;
+    transform: rotateY(0deg);
+    transition: transform 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.cover-logo {
+    width: 44px;
+    height: 44px;
+    border-radius: 4px;
+    object-fit: cover;
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+}
+
+.book-cover-back {
+    z-index: 1;
+    transform: rotateY(0deg);
+}
+
+.book-page {
+    position: absolute;
+    width: calc(100% - 4px);
+    height: calc(100% - 6px);
+    top: 3px;
+    right: 2px;
+    background-color: #faf6eb; /* Notion style page tint */
+    border: 1px solid var(--border-color);
+    border-left: none;
+    border-radius: 0 4px 4px 0;
+    transform-origin: left center;
+    transform: rotateY(0deg);
+    z-index: 5;
+    transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.page-1 { z-index: 8; transition-delay: 0.1s; }
+.page-2 { z-index: 7; transition-delay: 0.22s; }
+.page-3 { z-index: 6; transition-delay: 0.35s; }
+
+/* Book opened classes */
+.book.opened .book-cover-front {
+    transform: rotateY(-145deg);
+}
+
+.book.opened .page-1 {
+    transform: rotateY(-135deg);
+}
+
+.book.opened .page-2 {
+    transform: rotateY(-120deg);
+}
+
+.book.opened .page-3 {
+    transform: rotateY(-105deg);
+}
+
+.intro-title {
+    font-family: var(--font-heading);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    color: var(--text-primary);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 1s ease, transform 1s ease;
+    transition-delay: 0.5s;
+}
+
+.intro-title.reveal {
+    opacity: 1;
+    transform: translateY(0);
+}
+
