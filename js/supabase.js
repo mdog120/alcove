@@ -28,7 +28,7 @@ export function getSupabase() {
 
 /**
  * Register a new user and create their profile.
- * Storing demographic fields in metadata and profiles table.
+ * Storing demographic fields and school district settings.
  */
 export async function signUpUser(email, password, fullName, schoolName, details = {}) {
     const sb = getSupabase();
@@ -46,6 +46,7 @@ export async function signUpUser(email, password, fullName, schoolName, details 
                 state: details.state || "",
                 city: details.city || "",
                 education_level: details.educationLevel || "college",
+                school_district: details.schoolDistrict || "",
                 major: details.major || "",
                 grad_year: details.gradYear || "",
                 avatar_url: `https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80`
@@ -68,6 +69,7 @@ export async function signUpUser(email, password, fullName, schoolName, details 
                     state: details.state || "",
                     city: details.city || "",
                     education_level: details.educationLevel || "college",
+                    school_district: details.schoolDistrict || "",
                     major: details.major || "",
                     grad_year: details.gradYear || "",
                     updated_at: new Date().toISOString()
@@ -126,6 +128,7 @@ export async function getUserProfile(user) {
         state: user.user_metadata?.state || "",
         city: user.user_metadata?.city || "",
         educationLevel: user.user_metadata?.education_level || "college",
+        schoolDistrict: user.user_metadata?.school_district || "",
         major: user.user_metadata?.major || "",
         gradYear: user.user_metadata?.grad_year || ""
     };
@@ -148,6 +151,7 @@ export async function getUserProfile(user) {
             profile.state = data.state || profile.state;
             profile.city = data.city || profile.city;
             profile.educationLevel = data.education_level || profile.educationLevel;
+            profile.schoolDistrict = data.school_district || profile.schoolDistrict;
             profile.major = data.major || profile.major;
             profile.gradYear = data.grad_year || profile.gradYear;
             if (data.avatar_url) profile.avatar = data.avatar_url;
