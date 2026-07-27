@@ -29,7 +29,7 @@ export const loginView = {
                     Alcove brings classes, assignments, GPA tracking, study sheets, and classmate group chats together into one beautiful place.
                 </p>
                 <!-- Converted to direct native href anchor link -->
-                <a href="#signup" class="btn btn-primary" id="hero-cta-btn" style="padding: 8px 16px; font-size:13.5px; font-weight:600; display: inline-inline-block; text-decoration: none;">
+                <a href="#signup" class="btn btn-primary" id="hero-cta-btn" style="padding: 8px 16px; font-size:13.5px; font-weight:600; display: inline-block; text-decoration: none;">
                     Get Alcove Free &rarr;
                 </a>
             </section>

@@ -53,14 +53,20 @@ class AppController {
         // Routing listeners
         window.addEventListener('hashchange', () => this.handleRoute());
 
-        window.addEventListener('DOMContentLoaded', () => {
+        const bootstrapApp = () => {
             this.updateDateTime();
             this.renderNotifications();
             setInterval(() => this.updateDateTime(), 60000); // update date every minute
 
             // Orchestrate 3D Book Intro Animation
             this.orchestrateIntroAnimation();
-        });
+        };
+
+        if (document.readyState === 'loading') {
+            window.addEventListener('DOMContentLoaded', bootstrapApp);
+        } else {
+            bootstrapApp();
+        }
 
         // Global Modals listeners
         document.querySelectorAll('[data-close]').forEach(btn => {
