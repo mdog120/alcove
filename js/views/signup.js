@@ -4,7 +4,8 @@
 
 import { signUpUser } from '../supabase.js';
 
-const SCHOOLS_DATABASE = [
+// Local instant-lookup database of common schools (works offline)
+const LOCAL_SCHOOLS_DATABASE = [
     { name: "Stanford University", type: "college", city: "Stanford", state: "CA" },
     { name: "University of California, Berkeley", type: "college", city: "Berkeley", state: "CA" },
     { name: "San Jose State University", type: "college", city: "San Jose", state: "CA" },
@@ -27,6 +28,7 @@ const SCHOOLS_DATABASE = [
 export const signupView = {
     currentStep: 1,
     educationLevel: 'college', // 'college' | 'highschool'
+    debounceTimer: null,
 
     template() {
         return `
@@ -198,6 +200,45 @@ export const signupView = {
         this.bindEvents();
     },
 
+    // Fetch Universities in real-time from HipoLabs API
+    async queryUniversitiesAPI(nameQuery) {
+        try {
+            const response = await fetch(`https://universities.hipolabs.com/search?country=United+States&name=${encodeURIComponent(nameQuery)}`);
+            const data = await response.json();
+            return data.slice(0, 10).map(u => ({
+                name: u.name,
+                type: "college",
+                city: u.name.includes("University of") ? "Statewide" : "",
+                state: ""
+            }));
+        } catch (e) {
+            console.warn("HipoLabs University API call failed:", e);
+            return [];
+        }
+    },
+
+    // Fetch High Schools in real-time from Wikipedia Open Search directory
+    async queryHighSchoolsAPI(nameQuery) {
+        try {
+            const queryUrl = `https://en.wikipedia.org/w/api.php?action=opensearch&format=json&origin=*&limit=15&search=${encodeURIComponent(nameQuery)}+High+School`;
+            const response = await fetch(queryUrl);
+            const data = await response.json();
+            const titles = data[1] || [];
+            
+            return titles
+                .filter(title => title.toLowerCase().includes("high school") && !title.toLowerCase().includes("wiki"))
+                .map(title => ({
+                    name: title,
+                    type: "highschool",
+                    city: "",
+                    state: ""
+                }));
+        } catch (e) {
+            console.warn("Wikipedia High School Search API failed:", e);
+            return [];
+        }
+    },
+
     bindEvents() {
         // Step 1 Submit
         document.getElementById('onboarding-form-1').onsubmit = (e) => {
@@ -264,35 +305,57 @@ export const signupView = {
         const schoolInput = document.getElementById('reg-school');
         const autocompleteBox = document.getElementById('autocomplete-box');
 
-        const searchSchools = (query) => {
-            if (!query) {
+        const searchSchools = async (query) => {
+            if (!query || query.trim().length < 2) {
                 autocompleteBox.style.display = 'none';
                 return;
             }
 
+            // 1. Fetch Local Matches first (instant fallback)
             const cleanQuery = query.toLowerCase();
-            // Filter by type constraint + matching query string
-            const matches = SCHOOLS_DATABASE.filter(s => 
+            const localMatches = LOCAL_SCHOOLS_DATABASE.filter(s => 
                 s.type === this.educationLevel && 
                 s.name.toLowerCase().includes(cleanQuery)
             );
 
-            renderAutocompleteRows(matches);
+            renderAutocompleteRows(localMatches, true);
+
+            // Debounced API Request
+            clearTimeout(this.debounceTimer);
+            this.debounceTimer = setTimeout(async () => {
+                let externalMatches = [];
+                if (this.educationLevel === 'college') {
+                    externalMatches = await this.queryUniversitiesAPI(query);
+                } else {
+                    externalMatches = await this.queryHighSchoolsAPI(query);
+                }
+
+                // Merge local and external results uniquely by name
+                const mergedMap = new Map();
+                localMatches.forEach(item => mergedMap.set(item.name.toLowerCase(), item));
+                externalMatches.forEach(item => mergedMap.set(item.name.toLowerCase(), item));
+
+                renderAutocompleteRows(Array.from(mergedMap.values()), false);
+            }, 350);
         };
 
-        const renderAutocompleteRows = (matches) => {
+        const renderAutocompleteRows = (matches, isLoading = false) => {
             if (matches.length === 0) {
                 autocompleteBox.innerHTML = `
                     <div style="padding: 10px; font-size:11.5px; color:var(--text-muted); text-align:center;">
-                        No matching ${this.educationLevel === 'highschool' ? 'high schools' : 'colleges'} found.
+                        ${isLoading ? 'Searching...' : `No matching ${this.educationLevel === 'highschool' ? 'high schools' : 'colleges'} found.`}
                     </div>
                 `;
             } else {
-                autocompleteBox.innerHTML = matches.map(s => `
-                    <div class="autocomplete-row" data-name="${s.name}" style="padding: 8px 12px; cursor: pointer; font-size:12px; border-bottom:1px solid var(--border-color); color:var(--text-primary); transition:var(--transition-smooth);">
-                        <strong>${s.name}</strong> <span style="font-size:10px; color:var(--text-muted); float:right;">${s.city}, ${s.state}</span>
-                    </div>
-                `).join('');
+                autocompleteBox.innerHTML = matches.map(s => {
+                    const subtitle = s.city ? `${s.city}${s.state ? `, ${s.state}` : ''}` : 'US Institute';
+                    return `
+                        <div class="autocomplete-row" data-name="${s.name}" style="padding: 8px 12px; cursor: pointer; font-size:12px; border-bottom:1px solid var(--border-color); color:var(--text-primary); transition:var(--transition-smooth); display:flex; justify-content:space-between;">
+                            <strong>${s.name}</strong>
+                            <span style="font-size:10px; color:var(--text-muted);">${subtitle}</span>
+                        </div>
+                    `;
+                }).join('');
 
                 // Hover style handlers
                 autocompleteBox.querySelectorAll('.autocomplete-row').forEach(row => {
@@ -320,7 +383,7 @@ export const signupView = {
         // Location-Based "Near Me" Matching
         const geoBtn = document.getElementById('geo-school-btn');
         if (geoBtn) {
-            geoBtn.onclick = () => {
+            geoBtn.onclick = async () => {
                 const state = document.getElementById('reg-state').value;
                 const city = document.getElementById('reg-city').value.trim();
 
@@ -329,23 +392,29 @@ export const signupView = {
                     return;
                 }
 
-                // Filter by type + state & city coordinates
-                let localMatches = SCHOOLS_DATABASE.filter(s => 
+                window.app.showToast(`Locating ${this.educationLevel === 'highschool' ? 'high schools' : 'universities'} in ${city}...`, "info");
+
+                // Filter by local coordinates
+                let localMatches = LOCAL_SCHOOLS_DATABASE.filter(s => 
                     s.type === this.educationLevel && 
                     s.state === state && 
                     s.city.toLowerCase() === city.toLowerCase()
                 );
 
-                // Fallback: if no matches in their city, match State
-                if (localMatches.length === 0) {
-                    localMatches = SCHOOLS_DATABASE.filter(s => 
-                        s.type === this.educationLevel && 
-                        s.state === state
-                    );
+                // Fetch external elements matching city query from API
+                let externalMatches = [];
+                if (this.educationLevel === 'college') {
+                    externalMatches = await this.queryUniversitiesAPI(city);
+                } else {
+                    externalMatches = await this.queryHighSchoolsAPI(`${city} ${state}`);
                 }
 
-                window.app.showToast(`Found ${localMatches.length} ${this.educationLevel === 'highschool' ? 'high schools' : 'universities'} near you.`, "info");
-                renderAutocompleteRows(localMatches);
+                const mergedMap = new Map();
+                localMatches.forEach(item => mergedMap.set(item.name.toLowerCase(), item));
+                externalMatches.forEach(item => mergedMap.set(item.name.toLowerCase(), item));
+                const results = Array.from(mergedMap.values());
+
+                renderAutocompleteRows(results, false);
             };
         }
 
