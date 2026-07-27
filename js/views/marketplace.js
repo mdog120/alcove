@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Alcove Textbook & Gear Marketplace Router Module
+   Alcove Textbook & Gear Marketplace Router Module (Notion Aesthetics Edition)
    ========================================================================== */
 
 import { store } from '../store.js';
@@ -12,17 +12,17 @@ export const marketplaceView = {
     template() {
         return `
             <div class="planner-controls">
-                <h2 class="font-heading font-bold font-24">Campus Marketplace</h2>
+                <h2 class="font-heading font-bold font-24">🛍️ Campus Marketplace</h2>
                 <button class="btn btn-primary" id="market-sell-btn">
-                    <i class="fa-solid fa-tags"></i> List Item for Sale
+                    ➕ List Item for Sale
                 </button>
             </div>
 
             <!-- Filters Bar -->
             <div class="marketplace-filter-row glass-panel p-3 mb-4">
                 <div class="header-search flex-1 mb-0" style="max-width:320px; position:relative;">
-                    <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--text-muted);"></i>
-                    <input type="text" id="market-search-input" placeholder="Search books, gear, calculators..." style="padding-left:40px; background-color:var(--bg-primary);">
+                    <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:12px;"></i>
+                    <input type="text" id="market-search-input" placeholder="Search workspace..." style="padding-left:36px; background-color:var(--bg-primary);">
                 </div>
                 
                 <div class="marketplace-filters">
@@ -37,7 +37,7 @@ export const marketplaceView = {
                     <select id="market-cond-filter">
                         <option value="all">All Conditions</option>
                         <option value="new">Like New</option>
-                        <option value="good">Very Good / Good</option>
+                        <option value="good">Very Good</option>
                         <option value="fair">Fair</option>
                         <option value="worn">Worn</option>
                     </select>
@@ -55,7 +55,6 @@ export const marketplaceView = {
         this.renderMarketGrid();
         this.bindEvents();
 
-        // Listen for store listings changes
         store.subscribe("marketplace_changed", () => {
             this.renderMarketGrid();
         });
@@ -65,17 +64,14 @@ export const marketplaceView = {
         const container = document.getElementById('market-grid-container');
         let items = store.getMarketplace();
 
-        // Query filtering
         if (this.searchQuery) {
             items = items.filter(i => i.title.toLowerCase().includes(this.searchQuery) || (i.course && i.course.toLowerCase().includes(this.searchQuery)));
         }
 
-        // Category filter
         if (this.categoryFilter !== 'all') {
             items = items.filter(i => i.category === this.categoryFilter);
         }
 
-        // Condition filter
         if (this.conditionFilter !== 'all') {
             if (this.conditionFilter === 'good') {
                 items = items.filter(i => i.condition === 'good' || i.condition === 'new');
@@ -86,25 +82,28 @@ export const marketplaceView = {
 
         if (items.length === 0) {
             container.innerHTML = `
-                <div class="col-span-full py-5 text-center text-secondary">
-                    <i class="fa-solid fa-store-slash text-indigo mb-3" style="font-size:36px; opacity:0.5;"></i>
-                    <p>No listings found matching your search options.</p>
+                <div class="col-span-full py-4 text-center text-secondary">
+                    <p class="font-12 text-muted">No listings found matching criteria.</p>
                 </div>
             `;
             return;
         }
 
         container.innerHTML = items.map(item => {
-            let iconEmoji = "📚";
+            let iconEmoji = "📘";
             if (item.imgType === "calculator") iconEmoji = "🧮";
             if (item.imgType === "laptop") iconEmoji = "💻";
             if (item.imgType === "flask") iconEmoji = "🧪";
+            if (item.imgType === "book-red") iconEmoji = "📕";
+            if (item.imgType === "book-green") iconEmoji = "📗";
 
             let conditionLabel = "Good";
-            if (item.condition === "new") conditionLabel = "Like New";
-            if (item.condition === "good") conditionLabel = "Very Good";
-            if (item.condition === "fair") conditionLabel = "Fair Condition";
-            if (item.condition === "worn") conditionLabel = "Worn Spine";
+            let condTag = "blue";
+            
+            if (item.condition === "new") { conditionLabel = "Like New"; condTag = "emerald"; }
+            else if (item.condition === "good") { conditionLabel = "Very Good"; condTag = "blue"; }
+            else if (item.condition === "fair") { conditionLabel = "Fair"; condTag = "amber"; }
+            else if (item.condition === "worn") { conditionLabel = "Worn"; condTag = "red"; }
 
             return `
                 <div class="marketplace-card glass-panel">
@@ -114,17 +113,19 @@ export const marketplaceView = {
                     </div>
                     
                     <div class="item-details-panel">
-                        <span class="item-cat-label">${item.category} ${item.course ? `&bull; ${item.course}` : ''}</span>
+                        <span class="item-cat-label" style="color: var(--color-primary);">${item.category} ${item.course ? `&bull; ${item.course}` : ''}</span>
                         <h4 class="item-title-txt" title="${item.title}">${item.title}</h4>
-                        <span class="item-condition-badge">${conditionLabel}</span>
+                        <span class="item-condition-badge" style="background-color: var(--tag-${condTag}-bg); color: var(--tag-${condTag}-text); border:none; padding: 2px 6px;">
+                            ${conditionLabel}
+                        </span>
 
                         <div class="item-seller-row">
                             <div class="item-seller-info">
                                 <img src="${item.sellerAvatar}" alt="${item.seller}" class="item-seller-avatar">
                                 <span class="item-seller-name">${item.seller}</span>
                             </div>
-                            <button class="btn btn-secondary btn-sm contact-seller-btn" data-item-id="${item.id}" style="padding: 6px 12px; font-size:11px;">
-                                <i class="fa-regular fa-comment text-indigo"></i> Buy / Contact
+                            <button class="btn btn-secondary btn-sm contact-seller-btn" data-item-id="${item.id}" style="padding: 4px 8px; font-size:11px;">
+                                Message
                             </button>
                         </div>
                     </div>
@@ -132,7 +133,6 @@ export const marketplaceView = {
             `;
         }).join('');
 
-        // Wire purchase details click
         container.querySelectorAll('.contact-seller-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const id = btn.getAttribute('data-item-id');
@@ -151,7 +151,6 @@ export const marketplaceView = {
             return;
         }
 
-        // Direct user to chat pane with seller
         const mockSeller = {
             id: `partner-${item.seller.replace(/\s+/g, '-').toLowerCase()}`,
             name: item.seller,
@@ -162,38 +161,28 @@ export const marketplaceView = {
             avatar: item.sellerAvatar
         };
 
-        // Create DM channel messages in store if empty
-        const roomName = `dm-${mockSeller.id}`;
-        
-        // Add message template
         store.addMessage('dm-room', `Hey Alex! I saw you wanted to buy my "${item.title}" listed for $${item.price}! Let me know when you'd like to meet up on campus.`, false, mockSeller.name, mockSeller.avatar);
 
-        // Inject active DM settings into chatView
         import('./chat.js').then(module => {
             module.chatView.isDirectMessage = true;
             module.chatView.activeChannel = 'dm-room';
             module.chatView.activeDMUser = mockSeller;
-            
-            // Route
             window.location.hash = '#chat';
-            window.app.showToast(`Connecting with seller ${item.seller}...`, "success");
+            window.app.showToast(`Connecting with ${item.seller}...`, "success");
         });
     },
 
     bindEvents() {
-        // List item btn clicks
         document.getElementById('market-sell-btn').addEventListener('click', () => {
             document.getElementById('marketplace-form').reset();
             window.app.openModal('marketplace-modal');
         });
 
-        // Search inputs
         document.getElementById('market-search-input').addEventListener('input', (e) => {
             this.searchQuery = e.target.value.toLowerCase();
             this.renderMarketGrid();
         });
 
-        // Category & condition dropdown changes
         document.getElementById('market-cat-filter').addEventListener('change', (e) => {
             this.categoryFilter = e.target.value;
             this.renderMarketGrid();

@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alcove | The All-in-One Student Hub</title>
-    <!-- Google Fonts -->
+    <title>Alcove | Your Student Workspace</title>
+    <!-- Google Fonts: Inter for clean typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome for Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for fallback actions -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/styles.css">
@@ -18,51 +18,49 @@
     <!-- App Layout Shell -->
     <div class="app-container">
         
-        <!-- Sidebar Navigation -->
+        <!-- Sidebar Navigation (Notion Style) -->
         <aside class="sidebar">
             <div class="sidebar-brand">
-                <div class="brand-logo">
-                    <i class="fa-solid fa-graduation-cap"></i>
-                </div>
+                <div class="brand-logo">🏛️</div>
                 <span class="brand-name">Alcove</span>
             </div>
             
             <nav class="sidebar-nav">
                 <a href="#dashboard" class="nav-item active" data-view="dashboard">
-                    <i class="fa-solid fa-house-chimney"></i>
+                    <span class="nav-icon">🏠</span>
                     <span>Dashboard</span>
                 </a>
                 <a href="#planner" class="nav-item" data-view="planner">
-                    <i class="fa-solid fa-calendar-days"></i>
+                    <span class="nav-icon">📅</span>
                     <span>Planner & Calendar</span>
                 </a>
                 <a href="#gpa" class="nav-item" data-view="gpa">
-                    <i class="fa-solid fa-calculator"></i>
+                    <span class="nav-icon">🧮</span>
                     <span>GPA Calculator</span>
                 </a>
                 <a href="#chat" class="nav-item" data-view="chat">
-                    <i class="fa-solid fa-comments"></i>
+                    <span class="nav-icon">💬</span>
                     <span>Class Chats</span>
                 </a>
                 <a href="#notes" class="nav-item" data-view="notes">
-                    <i class="fa-solid fa-note-sticky"></i>
+                    <span class="nav-icon">📝</span>
                     <span>Notes Share</span>
                 </a>
                 <a href="#marketplace" class="nav-item" data-view="marketplace">
-                    <i class="fa-solid fa-store"></i>
+                    <span class="nav-icon">🛍️</span>
                     <span>Marketplace</span>
                 </a>
                 <a href="#events" class="nav-item" data-view="events">
-                    <i class="fa-solid fa-champagne-glasses"></i>
+                    <span class="nav-icon">🎉</span>
                     <span>Campus Hub</span>
                 </a>
             </nav>
 
             <div class="sidebar-footer">
                 <button id="theme-toggle" class="theme-btn" aria-label="Toggle dark mode">
-                    <i class="fa-solid fa-moon dark-icon"></i>
-                    <i class="fa-solid fa-sun light-icon"></i>
-                    <span>Theme</span>
+                    <span class="theme-icon dark-icon">🌙</span>
+                    <span class="theme-icon light-icon">☀️</span>
+                    <span>Theme Mode</span>
                 </button>
                 
                 <div class="user-profile">
@@ -81,24 +79,24 @@
             <header class="top-header">
                 <div class="header-left">
                     <div class="school-selector">
-                        <i class="fa-solid fa-university text-indigo"></i>
+                        <span>🌲</span>
                         <span class="current-school">Stanford University</span>
                     </div>
                     <div class="header-search">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" id="global-search" placeholder="Search classes, events, textbooks...">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input type="text" id="global-search" placeholder="Search workspace...">
                     </div>
                 </div>
 
                 <div class="header-right">
                     <!-- Notification Tray -->
                     <div class="header-action notification-bell" id="notification-trigger">
-                        <i class="fa-regular fa-bell"></i>
+                        <span>🔔</span>
                         <span class="notification-badge" id="notif-badge">3</span>
                         <!-- Dropdown -->
                         <div class="notification-dropdown" id="notif-dropdown">
                             <div class="notif-header">
-                                <h3>Notifications</h3>
+                                <h3>Updates</h3>
                                 <button id="mark-all-read">Mark all as read</button>
                             </div>
                             <div class="notif-list" id="notif-list-container">
@@ -109,7 +107,7 @@
 
                     <!-- Today's date widget -->
                     <div class="header-date">
-                        <i class="fa-regular fa-calendar"></i>
+                        <span>📅</span>
                         <span id="live-date">July 27, 2026</span>
                     </div>
                 </div>
@@ -125,9 +123,9 @@
 
     <!-- Add Task Modal -->
     <div id="task-modal" class="modal-overlay">
-        <div class="modal-content glass-panel animate-zoom">
+        <div class="modal-content glass-panel">
             <div class="modal-header">
-                <h3 id="task-modal-title">Add Assignment / Exam</h3>
+                <h3 id="task-modal-title">📝 Add Assignment / Exam</h3>
                 <button class="close-modal-btn" data-close="task-modal">&times;</button>
             </div>
             <form id="task-form">
@@ -161,15 +159,15 @@
                     <div class="form-group">
                         <label for="task-priority">Priority</label>
                         <select id="task-priority" required>
-                            <option value="low">🟢 Low</option>
-                            <option value="medium" selected>🟡 Medium</option>
-                            <option value="high">🔴 High</option>
+                            <option value="low">Low Priority</option>
+                            <option value="medium" selected>Medium Priority</option>
+                            <option value="high">High Priority</option>
                         </select>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="task-notes">Notes</label>
-                    <textarea id="task-notes" placeholder="Any details, links or checklists..."></textarea>
+                    <textarea id="task-notes" placeholder="Add descriptions, reference links..."></textarea>
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-secondary" data-close="task-modal">Cancel</button>
@@ -181,9 +179,9 @@
 
     <!-- Sell Item Modal -->
     <div id="marketplace-modal" class="modal-overlay">
-        <div class="modal-content glass-panel animate-zoom">
+        <div class="modal-content glass-panel">
             <div class="modal-header">
-                <h3>List Book or Gear for Sale</h3>
+                <h3>🏷️ List Book or Gear for Sale</h3>
                 <button class="close-modal-btn" data-close="marketplace-modal">&times;</button>
             </div>
             <form id="marketplace-form">
@@ -223,11 +221,11 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="item-image-select">Item Thumbnail Icon / Color</label>
+                    <label for="item-image-select">Item Type Icon</label>
                     <select id="item-image-select">
-                        <option value="book-blue">📚 Blue Book</option>
-                        <option value="book-red">📚 Red Book</option>
-                        <option value="book-green">📚 Green Book</option>
+                        <option value="book-blue">📘 Blue Book</option>
+                        <option value="book-red">📕 Red Book</option>
+                        <option value="book-green">📗 Green Book</option>
                         <option value="laptop">💻 Laptop/Electronics</option>
                         <option value="calculator">🧮 Calculator</option>
                         <option value="flask">🧪 Flask/Chemistry Kit</option>
@@ -235,7 +233,7 @@
                 </div>
                 <div class="form-group">
                     <label for="item-desc">Description</label>
-                    <textarea id="item-desc" placeholder="Details about binding, pages, pickup location..." required></textarea>
+                    <textarea id="item-desc" placeholder="Details about binding, pick up location..." required></textarea>
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-secondary" data-close="marketplace-modal">Cancel</button>
@@ -247,9 +245,9 @@
 
     <!-- Create Event Modal -->
     <div id="event-modal" class="modal-overlay">
-        <div class="modal-content glass-panel animate-zoom">
+        <div class="modal-content glass-panel">
             <div class="modal-header">
-                <h3>Post Campus Event / Club Meetup</h3>
+                <h3>📢 Post Campus Event / Club Meetup</h3>
                 <button class="close-modal-btn" data-close="event-modal">&times;</button>
             </div>
             <form id="event-form">
@@ -287,7 +285,7 @@
                 </div>
                 <div class="form-group">
                     <label for="event-desc">Event Description</label>
-                    <textarea id="event-desc" placeholder="Details, schedule, foods provided, guest details..." required></textarea>
+                    <textarea id="event-desc" placeholder="Details about schedule, food, speaker details..." required></textarea>
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-secondary" data-close="event-modal">Cancel</button>

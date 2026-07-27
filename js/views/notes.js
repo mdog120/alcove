@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Alcove Notes Manager & Shared Campus Library Router Module
+   Alcove Notes Manager & Shared Campus Library Router Module (Notion Edition)
    ========================================================================== */
 
 import { store } from '../store.js';
@@ -11,20 +11,19 @@ export const notesView = {
     template() {
         return `
             <div class="planner-controls">
-                <h2 class="font-heading font-bold font-24">Study Notes Hub</h2>
+                <h2 class="font-heading font-bold font-24">📝 Study Notes Hub</h2>
                 <button class="btn btn-primary" id="notes-new-btn">
-                    <i class="fa-solid fa-file-circle-plus"></i> New Note
+                    ➕ New Note
                 </button>
             </div>
 
             <!-- Notes Main Editor Panel Layout -->
-            <div class="notes-layout mb-5">
+            <div class="notes-layout mb-4">
                 
                 <!-- Left Pane: Notes Folders List -->
                 <div class="notes-list-pane glass-panel">
                     <div class="notes-search-bar mb-3">
-                        <i class="fa-solid fa-magnifying-glass" style="color:var(--text-muted); align-self:center; margin-left: 10px; position:absolute;"></i>
-                        <input type="text" id="notes-local-search" placeholder="Search my notes..." style="padding-left:32px;">
+                        <input type="text" id="notes-local-search" placeholder="Search my notes...">
                     </div>
                     
                     <div class="notes-cards-grid" id="notes-list-container">
@@ -46,14 +45,14 @@ export const notesView = {
 
                     <!-- Mock Rich Text Toolbar -->
                     <div class="editor-toolbar">
-                        <button class="editor-tool-btn" data-cmd="bold" title="Bold"><i class="fa-solid fa-bold"></i></button>
-                        <button class="editor-tool-btn" data-cmd="italic" title="Italic"><i class="fa-solid fa-italic"></i></button>
-                        <button class="editor-tool-btn" data-cmd="underline" title="Underline"><i class="fa-solid fa-underline"></i></button>
-                        <button class="editor-tool-btn" data-cmd="list" title="Bullet List"><i class="fa-solid fa-list-ul"></i></button>
-                        <button class="editor-tool-btn" data-cmd="code" title="Code Block"><i class="fa-solid fa-code"></i></button>
+                        <button class="editor-tool-btn" data-cmd="bold" title="Bold"><b>B</b></button>
+                        <button class="editor-tool-btn" data-cmd="italic" title="Italic"><i>I</i></button>
+                        <button class="editor-tool-btn" data-cmd="underline" title="Underline"><u>U</u></button>
+                        <button class="editor-tool-btn" data-cmd="list" title="Bullet List">List</button>
+                        <button class="editor-tool-btn" data-cmd="code" title="Code Block">&lt;/&gt;</button>
                         <div style="width: 1px; background-color: var(--border-color); margin: 0 4px;"></div>
                         <button class="editor-tool-btn" data-cmd="share" title="Share to Campus Library" id="editor-btn-share">
-                            <i class="fa-solid fa-share-nodes" style="color:var(--color-cyan);"></i>
+                            📤 Share
                         </button>
                     </div>
 
@@ -74,13 +73,13 @@ export const notesView = {
             <!-- Bottom Section: Campus Shared Library -->
             <section class="notes-library-section">
                 <div class="dashboard-section-title">
-                    <span><i class="fa-solid fa-book-open text-cyan mr-2"></i>Campus Shared Library</span>
+                    <span>📖 Campus Shared Library</span>
                 </div>
 
                 <div class="marketplace-filter-row glass-panel p-3 mb-4">
-                    <div class="header-search flex-1 mb-0" style="max-width:400px; position:relative;">
-                        <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--text-muted);"></i>
-                        <input type="text" id="library-search-input" placeholder="Search community shared notes (e.g. Krebs, Calculus)..." style="padding-left:40px; background-color:var(--bg-primary);">
+                    <div class="header-search flex-1 mb-0" style="max-width:360px; position:relative;">
+                        <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:12px;"></i>
+                        <input type="text" id="library-search-input" placeholder="Search community notes..." style="padding-left:36px; background-color:var(--bg-primary);">
                     </div>
                     <div class="marketplace-filters">
                         <select id="library-class-filter">
@@ -107,7 +106,6 @@ export const notesView = {
         this.renderLibrary();
         this.bindEvents();
 
-        // Register store changes
         store.subscribe("notes_changed", () => {
             this.renderNotesList();
         });
@@ -116,11 +114,19 @@ export const notesView = {
         });
     },
 
+    getTagTheme(courseColor) {
+        let tag = 'blue';
+        if (courseColor === 'amber') tag = 'amber';
+        if (courseColor === 'emerald') tag = 'emerald';
+        if (courseColor === 'purple' || courseColor === 'indigo') tag = 'purple';
+        if (courseColor === 'rose') tag = 'red';
+        return tag;
+    },
+
     renderNotesList(searchQuery = '') {
         const container = document.getElementById('notes-list-container');
         let notes = store.getNotes();
 
-        // Local search filter
         if (searchQuery) {
             notes = notes.filter(n => n.title.toLowerCase().includes(searchQuery.toLowerCase()) || n.content.toLowerCase().includes(searchQuery.toLowerCase()));
         }
@@ -133,23 +139,20 @@ export const notesView = {
         container.innerHTML = notes.map(n => {
             const course = store.getCourses().find(c => c.id === n.courseId);
             const courseCode = course ? course.code : "General";
-            const color = course ? course.color : "muted";
 
             return `
                 <div class="note-folder-card glass-panel ${this.activeNoteId === n.id ? 'active' : ''}" data-note-id="${n.id}">
                     <div class="note-info-block">
-                        <span class="note-folder-icon text-${color}">📁</span>
+                        <span class="note-folder-icon">📝</span>
                         <div class="note-folder-details">
                             <h4>${n.title || 'Untitled Note'}</h4>
                             <p>${courseCode} &bull; ${n.date}</p>
                         </div>
                     </div>
-                    <i class="fa-solid fa-chevron-right text-muted font-11"></i>
                 </div>
             `;
         }).join('');
 
-        // Folder click routing
         container.querySelectorAll('.note-folder-card').forEach(card => {
             card.addEventListener('click', () => {
                 this.activeNoteId = card.getAttribute('data-note-id');
@@ -185,20 +188,17 @@ export const notesView = {
             textBody.value = note.content;
             charCount.textContent = `${note.content.length} characters`;
         } else {
-            // Empty state if activeNoteId deleted or invalid
             titleInput.value = '';
             textBody.value = '';
-            dateLabel.textContent = 'Unsaved Note';
+            dateLabel.textContent = 'Unsaved';
             charCount.textContent = '0 characters';
         }
     },
 
-    // Render Shared Public Library
     renderLibrary(classFilter = 'all') {
         const container = document.getElementById('library-grid-container');
         let libNotes = store.getLibraryNotes();
 
-        // Search & course filtering
         if (this.librarySearchQuery) {
             libNotes = libNotes.filter(n => n.title.toLowerCase().includes(this.librarySearchQuery) || n.author.toLowerCase().includes(this.librarySearchQuery));
         }
@@ -209,8 +209,8 @@ export const notesView = {
 
         if (libNotes.length === 0) {
             container.innerHTML = `
-                <div class="col-span-full py-5 text-center text-secondary">
-                    <p>No community notes found matching filters.</p>
+                <div class="col-span-full py-4 text-center text-secondary">
+                    <p class="font-12 text-muted">No shared notes found matching query.</p>
                 </div>
             `;
             return;
@@ -220,17 +220,17 @@ export const notesView = {
 
         container.innerHTML = libNotes.map(n => {
             const courseMatch = courses.find(c => c.code === n.course);
-            const badgeColor = courseMatch ? courseMatch.color : "indigo";
+            const rawColor = courseMatch ? courseMatch.color : "indigo";
+            const tagTheme = this.getTagTheme(rawColor);
 
             return `
                 <div class="library-note-card glass-panel">
                     <div class="lib-card-header">
-                        <span class="lib-card-tag" style="background-color:rgba(var(--color-${badgeColor}), 0.1); color:var(--color-${badgeColor});">
+                        <span class="lib-card-tag" style="background-color: var(--tag-${tagTheme}-bg); color: var(--tag-${tagTheme}-text);">
                             ${n.course}
                         </span>
                         <div class="lib-card-downloads">
-                            <i class="fa-solid fa-download"></i>
-                            <span class="dl-count">${n.downloads}</span>
+                            <span>📥 ${n.downloads}</span>
                         </div>
                     </div>
                     
@@ -241,18 +241,16 @@ export const notesView = {
 
                     <div class="lib-card-footer">
                         <div class="lib-card-rating">
-                            <i class="fa-solid fa-star"></i>
-                            <span>${n.rating}</span>
+                            <span>⭐ ${n.rating}</span>
                         </div>
-                        <button class="btn btn-secondary btn-sm lib-download-btn" data-lib-id="${n.id}" style="padding: 6px 12px; font-size:11px;">
-                            <i class="fa-solid fa-download text-cyan"></i> Get
+                        <button class="btn btn-secondary btn-sm lib-download-btn" data-lib-id="${n.id}" style="padding: 4px 8px; font-size:11px;">
+                            Download
                         </button>
                     </div>
                 </div>
             `;
         }).join('');
 
-        // Wire download button interactions
         container.querySelectorAll('.lib-download-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const id = btn.getAttribute('data-lib-id');
@@ -262,35 +260,33 @@ export const notesView = {
                     note.downloads++;
                     store.saveLibraryNotes(list);
                     
-                    // Display download loading feedback
-                    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-cyan"></i> Fetching`;
+                    btn.innerHTML = `Loading...`;
                     btn.disabled = true;
 
                     setTimeout(() => {
-                        window.app.showToast(`Downloaded: "${note.title}"! Checked in downloads directory.`, "success");
-                        btn.innerHTML = `<i class="fa-solid fa-check text-emerald"></i> Get`;
+                        window.app.showToast(`Downloaded "${note.title}" successfully!`, "success");
+                        btn.innerHTML = `Download`;
+                        btn.disabled = false;
                         this.renderLibrary(classFilter);
-                    }, 1000);
+                    }, 800);
                 }
             });
         });
     },
 
     bindEvents() {
-        // My notes local search filter
         document.getElementById('notes-local-search').addEventListener('input', (e) => {
             this.renderNotesList(e.target.value);
         });
 
-        // New note button coordinator
         document.getElementById('notes-new-btn').addEventListener('click', () => {
             const allNotes = store.getNotes();
             const now = new Date();
             const newNote = {
                 id: `note-${Date.now()}`,
-                title: "New Lecture Notes",
+                title: "New Study Sheet",
                 courseId: store.getCourses()[0].id,
-                content: "Lecture topic summary...",
+                content: "",
                 date: now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
                 color: "indigo"
             };
@@ -300,10 +296,9 @@ export const notesView = {
             this.activeNoteId = newNote.id;
             this.renderNotesList();
             this.loadActiveNote();
-            window.app.showToast("Created a new blank note!", "success");
+            window.app.showToast("Created a new blank note page!", "success");
         });
 
-        // Save Note content
         document.getElementById('editor-save-btn').addEventListener('click', () => {
             const allNotes = store.getNotes();
             const note = allNotes.find(n => n.id === this.activeNoteId);
@@ -315,33 +310,29 @@ export const notesView = {
                 note.date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                 
                 store.saveNotes(allNotes);
-                window.app.showToast("Note content saved locally!", "success");
+                window.app.showToast("Saved note workspace!", "success");
                 this.renderNotesList();
                 this.loadActiveNote();
             }
         });
 
-        // Delete note
         document.getElementById('editor-delete-btn').addEventListener('click', () => {
-            if (confirm("Are you sure you want to delete this note?")) {
+            if (confirm("Delete this page?")) {
                 let allNotes = store.getNotes();
                 allNotes = allNotes.filter(n => n.id !== this.activeNoteId);
                 store.saveNotes(allNotes);
                 
                 window.app.showToast("Note deleted", "warning");
-                // Reset active note ID to first remaining note
                 this.activeNoteId = allNotes.length > 0 ? allNotes[0].id : null;
                 this.renderNotesList();
                 this.loadActiveNote();
             }
         });
 
-        // Char count updater
         document.getElementById('editor-text-body').addEventListener('keyup', (e) => {
             document.getElementById('editor-char-count').textContent = `${e.target.value.length} characters`;
         });
 
-        // Mock Toolbar operations
         document.querySelectorAll('.editor-toolbar button').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -352,7 +343,7 @@ export const notesView = {
                 const text = textarea.value;
                 const selectedText = text.substring(start, end);
 
-                if (cmd === 'share') return; // Handled separately below
+                if (cmd === 'share') return; 
 
                 let wrappedText = selectedText;
                 if (cmd === 'bold') wrappedText = `**${selectedText}**`;
@@ -362,11 +353,9 @@ export const notesView = {
                 if (cmd === 'code') wrappedText = `\`\`\`\n${selectedText}\n\`\`\``;
 
                 textarea.value = text.substring(0, start) + wrappedText + text.substring(end);
-                window.app.showToast(`Applied markdown tag`, "info");
             });
         });
 
-        // Share note to public library
         document.getElementById('editor-btn-share').addEventListener('click', () => {
             const title = document.getElementById('editor-title').value;
             const courseId = document.getElementById('editor-course').value;
@@ -376,7 +365,7 @@ export const notesView = {
             const libNotes = store.getLibraryNotes();
             libNotes.push({
                 id: `lib-${Date.now()}`,
-                title: `${title} (Lecture Notes)`,
+                title: `${title}`,
                 course: courseCode,
                 author: store.user.name,
                 downloads: 0,
@@ -385,11 +374,10 @@ export const notesView = {
             });
 
             store.saveLibraryNotes(libNotes);
-            window.app.showToast("Note published to Campus Shared Library!", "success");
+            window.app.showToast("Shared to campus library!", "success");
             this.renderLibrary();
         });
 
-        // Shared library search & filters
         document.getElementById('library-search-input').addEventListener('input', (e) => {
             this.librarySearchQuery = e.target.value.toLowerCase();
             const filterVal = document.getElementById('library-class-filter').value;

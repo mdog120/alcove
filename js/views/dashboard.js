@@ -1,18 +1,20 @@
 /* ==========================================================================
-   Alcove Dashboard View Router Module
+   Alcove Dashboard View Router Module (Notion Aesthetics Edition)
    ========================================================================== */
 
 import { store } from '../store.js';
 
 export const dashboardView = {
-    // Return view HTML template
     template() {
         return `
-            <!-- Dashboard Hero Section -->
-            <section class="dashboard-hero glass-panel glass-panel-glow">
+            <!-- Dashboard Hero Section (Notion Callout style) -->
+            <section class="dashboard-hero glass-panel">
                 <div class="hero-welcome">
-                    <h1 id="welcome-greeting">Hello, Alex!</h1>
-                    <p>Welcome back to your academic digital home. Here is what is on your plate today.</p>
+                    <span style="font-size: 26px; line-height: 1; padding-top: 4px;">👋</span>
+                    <div>
+                        <h1 id="welcome-greeting">Hello, Alex!</h1>
+                        <p>Welcome back to your workspace. Here is an overview of your academic life today.</p>
+                    </div>
                 </div>
                 <div class="hero-stats">
                     <div class="hero-stat-item">
@@ -33,33 +35,23 @@ export const dashboardView = {
             <!-- Quick Actions Panel -->
             <section class="quick-actions-bar">
                 <div class="quick-action-card glass-panel" id="qa-add-task">
-                    <div class="quick-action-icon text-rose" style="background-color: rgba(244,63,94,0.1);">
-                        <i class="fa-solid fa-plus"></i>
-                    </div>
+                    <span class="quick-action-icon">➕</span>
                     <span>Add Task</span>
                 </div>
                 <div class="quick-action-card glass-panel" id="qa-gpa">
-                    <div class="quick-action-icon text-indigo" style="background-color: rgba(99,102,241,0.1);">
-                        <i class="fa-solid fa-calculator"></i>
-                    </div>
+                    <span class="quick-action-icon">🧮</span>
                     <span>GPA Calculator</span>
                 </div>
                 <div class="quick-action-card glass-panel" id="qa-chat">
-                    <div class="quick-action-icon text-purple" style="background-color: rgba(168,85,247,0.1);">
-                        <i class="fa-solid fa-comments"></i>
-                    </div>
+                    <span class="quick-action-icon">💬</span>
                     <span>Class Chats</span>
                 </div>
                 <div class="quick-action-card glass-panel" id="qa-notes">
-                    <div class="quick-action-icon text-cyan" style="background-color: rgba(6,182,212,0.1);">
-                        <i class="fa-solid fa-file-signature"></i>
-                    </div>
+                    <span class="quick-action-icon">📝</span>
                     <span>Notes Library</span>
                 </div>
                 <div class="quick-action-card glass-panel" id="qa-sell">
-                    <div class="quick-action-icon text-emerald" style="background-color: rgba(16,185,129,0.1);">
-                        <i class="fa-solid fa-tags"></i>
-                    </div>
+                    <span class="quick-action-icon">🛍️</span>
                     <span>Sell Book / Gear</span>
                 </div>
             </section>
@@ -70,7 +62,7 @@ export const dashboardView = {
                 <!-- Today's Schedule -->
                 <section class="dashboard-section glass-panel p-4">
                     <div class="dashboard-section-title">
-                        <span><i class="fa-solid fa-graduation-cap text-indigo mr-2"></i>Today's Class Schedule</span>
+                        <span>🏫 Today's Class Schedule</span>
                         <span class="text-muted font-12" id="current-day-label">Tuesday Classes</span>
                     </div>
                     <div class="schedule-widget-list" id="dash-schedule-container">
@@ -81,8 +73,8 @@ export const dashboardView = {
                 <!-- Urgent Tasks/Deadlines -->
                 <section class="dashboard-section glass-panel p-4">
                     <div class="dashboard-section-title">
-                        <span><i class="fa-solid fa-clock text-rose mr-2"></i>Urgent Deadlines</span>
-                        <a href="#planner" class="text-indigo font-12 font-semibold">View Planner &rarr;</a>
+                        <span>⌛ Urgent Deadlines</span>
+                        <a href="#planner" class="text-indigo font-12 font-semibold" style="color: var(--color-primary) !important;">View Planner &rarr;</a>
                     </div>
                     <div class="task-summary-list" id="dash-tasks-container">
                         <!-- Dynamic tasks summary -->
@@ -93,7 +85,6 @@ export const dashboardView = {
         `;
     },
 
-    // Setup action hooks & render elements
     init() {
         this.updateWelcomeGreeting();
         this.renderStats();
@@ -113,7 +104,6 @@ export const dashboardView = {
     },
 
     renderStats() {
-        // Compute GPA based on Courses grades
         const courses = store.getCourses();
         const gradeScale = {
             "A+": 4.0, "A": 4.0, "A-": 3.7,
@@ -145,29 +135,25 @@ export const dashboardView = {
         const container = document.getElementById('dash-schedule-container');
         const courses = store.getCourses();
 
-        // Let's determine today's schedule. Mock calendar day is Tuesday (Tue)
-        const currentDay = new Date().getDay(); // 0 = Sun, 1 = Mon, 2 = Tue, 3 = Wed, 4 = Thu, 5 = Fri, 6 = Sat
+        const currentDay = new Date().getDay();
         const dayMap = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         
         document.getElementById('current-day-label').textContent = `${dayMap[currentDay]} Classes`;
 
         const dayAbbrev = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][currentDay];
-        
-        // Filter classes scheduled for today
         const todayClasses = courses.filter(c => c.time.includes(dayAbbrev));
 
         if (todayClasses.length === 0) {
             container.innerHTML = `
                 <div class="py-5 text-center text-secondary">
-                    <i class="fa-solid fa-moon text-indigo mb-3" style="font-size: 32px; opacity: 0.5;"></i>
-                    <p>No classes scheduled for today. Study session time!</p>
+                    <p style="font-size: 24px; margin-bottom: 8px;">📚</p>
+                    <p class="font-12 text-muted">No classes scheduled for today. Focus on self-study!</p>
                 </div>
             `;
             return;
         }
 
         container.innerHTML = todayClasses.map(c => {
-            // Get hours info e.g. "1:30 PM" from "Tue/Thu 1:30 PM"
             const timeParts = c.time.split(' ');
             const timeString = timeParts[timeParts.length - 2];
             const ampmString = timeParts[timeParts.length - 1];
@@ -175,15 +161,15 @@ export const dashboardView = {
             return `
                 <div class="schedule-card glass-panel">
                     <div class="schedule-time-box">
-                        <span class="schedule-time text-${c.color}">${timeString}</span>
+                        <span class="schedule-time">${timeString}</span>
                         <span class="schedule-period">${ampmString}</span>
                     </div>
                     <div class="schedule-details">
                         <h4>${c.code}: ${c.name}</h4>
-                        <span class="schedule-location"><i class="fa-solid fa-location-dot"></i> ${c.room}</span>
+                        <span class="schedule-location">📍 ${c.room}</span>
                     </div>
-                    <a href="#chat" class="btn btn-secondary btn-sm" style="padding: 6px 12px; font-size: 11px;">
-                        <i class="fa-solid fa-comment-dots text-${c.color}"></i> Class Chat
+                    <a href="#chat" class="btn btn-secondary btn-sm" style="padding: 5px 10px; font-size: 11.5px;">
+                        💬 Chat
                     </a>
                 </div>
             `;
@@ -194,7 +180,6 @@ export const dashboardView = {
         const container = document.getElementById('dash-tasks-container');
         const tasks = store.getTasks().filter(t => t.status !== 'done');
 
-        // Sort by priority (high > medium > low) then date
         const priorityWeight = { high: 3, medium: 2, low: 1 };
         tasks.sort((a, b) => {
             if (priorityWeight[b.priority] !== priorityWeight[a.priority]) {
@@ -208,8 +193,8 @@ export const dashboardView = {
         if (urgentTasks.length === 0) {
             container.innerHTML = `
                 <div class="py-5 text-center text-secondary">
-                    <i class="fa-solid fa-circle-check text-emerald mb-3" style="font-size: 32px; opacity: 0.5;"></i>
-                    <p>All tasks completed! Excellent work.</p>
+                    <p style="font-size: 24px; margin-bottom: 8px;">✅</p>
+                    <p class="font-12 text-muted">All caught up! No pending deadlines.</p>
                 </div>
             `;
             return;
@@ -229,28 +214,27 @@ export const dashboardView = {
                     <div>
                         <h4 class="task-sum-title">${t.title}</h4>
                         <div class="task-sum-meta">
-                            <span class="text-${course ? course.color : 'muted'} font-semibold">${courseCode}</span>
+                            <span class="font-semibold" style="color: var(--color-primary);">${courseCode}</span>
                             <span>&bull;</span>
                             <span class="text-muted">Due: ${dueFormatted}</span>
                         </div>
                     </div>
-                    <button class="task-complete-btn" data-task-id="${t.id}" aria-label="Mark task as complete">
+                    <button class="task-complete-btn" data-task-id="${t.id}" aria-label="Complete task">
                         <i class="fa-solid fa-check"></i>
                     </button>
                 </div>
             `;
         }).join('');
 
-        // Attach complete action handlers
         container.querySelectorAll('.task-complete-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+            btn.addEventListener('click', () => {
                 const id = btn.getAttribute('data-task-id');
                 const allTasks = store.getTasks();
                 const task = allTasks.find(t => t.id === id);
                 if (task) {
                     task.status = 'done';
                     store.saveTasks(allTasks);
-                    window.app.showToast(`Completed: "${task.title}"!`, "success");
+                    window.app.showToast(`Marked "${task.title}" as complete`, "success");
                     this.renderUrgentTasks();
                     this.renderStats();
                 }
@@ -259,20 +243,16 @@ export const dashboardView = {
     },
 
     bindEvents() {
-        // Quick Action binds
         document.getElementById('qa-add-task').addEventListener('click', () => {
-            // Populate courses selector inside Modal
             const courseSelect = document.getElementById('task-course');
             courseSelect.innerHTML = store.getCourses().map(c => `
                 <option value="${c.id}">${c.code} - ${c.name}</option>
             `).join('');
 
-            // Reset form details
             document.getElementById('task-form').reset();
             document.getElementById('task-id').value = '';
-            document.getElementById('task-modal-title').textContent = "Add Assignment / Exam";
+            document.getElementById('task-modal-title').textContent = "📝 Add Assignment / Exam";
             
-            // Set default date to tomorrow
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);
             tomorrow.setHours(23, 59, 0, 0);
@@ -281,7 +261,6 @@ export const dashboardView = {
             window.app.openModal('task-modal');
         });
 
-        // Form submit handler for Add Task
         document.getElementById('task-form').onsubmit = (e) => {
             e.preventDefault();
             const allTasks = store.getTasks();
@@ -294,13 +273,11 @@ export const dashboardView = {
             const taskNotes = document.getElementById('task-notes').value;
 
             if (taskId) {
-                // Edit task
                 const idx = allTasks.findIndex(t => t.id === taskId);
                 if (idx !== -1) {
                     allTasks[idx] = { ...allTasks[idx], title: taskTitle, courseId: taskCourse, type: taskType, due: taskDue, priority: taskPriority, notes: taskNotes };
                 }
             } else {
-                // New task
                 allTasks.push({
                     id: `task-${Date.now()}`,
                     title: taskTitle,
@@ -315,7 +292,7 @@ export const dashboardView = {
 
             store.saveTasks(allTasks);
             window.app.closeModal('task-modal');
-            window.app.showToast(taskId ? "Task updated successfully!" : "New task added to planner!", "success");
+            window.app.showToast(taskId ? "Task updated!" : "New task added!", "success");
             this.renderUrgentTasks();
             this.renderStats();
         };
@@ -329,7 +306,6 @@ export const dashboardView = {
             window.app.openModal('marketplace-modal');
         });
 
-        // Form submit handler for sell textbook
         document.getElementById('marketplace-form').onsubmit = (e) => {
             e.preventDefault();
             const title = document.getElementById('item-title').value;
@@ -356,7 +332,7 @@ export const dashboardView = {
 
             store.saveMarketplace(allMarket);
             window.app.closeModal('marketplace-modal');
-            window.app.showToast("Your listing is now live in the marketplace!", "success");
+            window.app.showToast("Item listed in marketplace!", "success");
         };
     }
 };

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Alcove Planner & Calendar Router Module
+   Alcove Planner & Calendar Router Module (Notion Aesthetics Edition)
    ========================================================================== */
 
 import { store } from '../store.js';
@@ -14,36 +14,36 @@ export const plannerView = {
                 <div class="d-flex align-items-center gap-3">
                     <h2 class="font-heading font-bold font-24">Class Scheduler</h2>
                     
-                    <!-- View Switching Tabs -->
+                    <!-- View Switching Tabs (Notion style) -->
                     <div class="view-tabs">
                         <button class="tab-btn ${this.currentTab === 'calendar' ? 'active' : ''}" id="btn-tab-calendar">
-                            <i class="fa-solid fa-calendar"></i> Calendar
+                            📅 Calendar
                         </button>
                         <button class="tab-btn ${this.currentTab === 'kanban' ? 'active' : ''}" id="btn-tab-kanban">
-                            <i class="fa-solid fa-columns"></i> Kanban Board
+                            📋 Kanban Board
                         </button>
                         <button class="tab-btn ${this.currentTab === 'list' ? 'active' : ''}" id="btn-tab-list">
-                            <i class="fa-solid fa-list-check"></i> List View
+                            📝 List View
                         </button>
                     </div>
                 </div>
 
                 <div class="d-flex align-items-center gap-2">
                     <!-- Course Filters -->
-                    <select id="planner-course-filter" class="form-group mb-0" style="padding: 8px 12px; font-size:12px; border-radius: 20px; width:auto; height:36px;">
+                    <select id="planner-course-filter" class="form-group mb-0" style="padding: 6px 12px; font-size:12px; border-radius: 4px; width:auto; height:32px;">
                         <option value="all">All Classes</option>
                         <!-- Dynamic option list -->
                     </select>
 
-                    <button class="btn btn-primary" id="planner-add-task-btn" style="height:36px;">
-                        <i class="fa-solid fa-plus"></i> New Task
+                    <button class="btn btn-primary" id="planner-add-task-btn" style="height:32px;">
+                        ➕ New Task
                     </button>
                 </div>
             </div>
 
             <!-- View Dynamic Panels -->
             <div class="glass-panel" id="planner-view-panel">
-                <!-- Javascript will inject subviews here -->
+                <!-- Dynamic subview content -->
             </div>
         `;
     },
@@ -53,7 +53,6 @@ export const plannerView = {
         this.renderSubView();
         this.bindEvents();
 
-        // Listen for store modifications
         store.subscribe("tasks_changed", () => {
             this.renderSubView();
         });
@@ -72,7 +71,6 @@ export const plannerView = {
         const panel = document.getElementById('planner-view-panel');
         let tasks = store.getTasks();
 
-        // Apply course filter
         if (this.currentCourseFilter !== 'all') {
             tasks = tasks.filter(t => t.courseId === this.currentCourseFilter);
         }
@@ -86,18 +84,26 @@ export const plannerView = {
         }
     },
 
-    // 1. Render Calendar Mode (July 2026)
+    // Helper to map mock colors to Notion tag themes
+    getTagTheme(courseColor) {
+        let tag = 'blue';
+        if (courseColor === 'amber') tag = 'amber';
+        if (courseColor === 'emerald') tag = 'emerald';
+        if (courseColor === 'purple' || courseColor === 'indigo') tag = 'purple';
+        if (courseColor === 'rose') tag = 'red';
+        return tag;
+    },
+
     renderCalendar(container, tasks) {
-        // July 2026: Wednesday starts July 1st, 31 days in month.
         const totalDays = 31;
-        const startDayOfWeek = 3; // Wednesday (0=Sun, 1=Mon, 2=Tue, 3=Wed...)
-        const daysInPrevMonth = 30; // June
+        const startDayOfWeek = 3; 
+        const daysInPrevMonth = 30; 
 
         let calendarHTML = `
             <div class="calendar-container">
-                <div class="d-flex align-items-center justify-content-between mb-4">
-                    <h3 class="font-heading font-bold">July 2026</h3>
-                    <div class="text-muted font-12">Click cells to add tasks</div>
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h3 class="font-heading font-bold" style="font-size:15px;">July 2026</h3>
+                    <div class="text-muted font-11">Double click cell to add task</div>
                 </div>
                 
                 <div class="calendar-header-grid">
@@ -106,18 +112,15 @@ export const plannerView = {
                 <div class="calendar-days-grid">
         `;
 
-        // Render previous month cells padding
         for (let i = startDayOfWeek - 1; i >= 0; i--) {
             const dayNum = daysInPrevMonth - i;
             calendarHTML += `<div class="calendar-cell muted"><span class="calendar-date-num">${dayNum}</span></div>`;
         }
 
-        // Render July days
         const courses = store.getCourses();
-        const todayDayNum = 27; // Mock date is July 27, 2026
+        const todayDayNum = 27; 
 
         for (let d = 1; d <= totalDays; d++) {
-            // Find tasks due on this date (format: 2026-07-DD)
             const dateStr = `2026-07-${String(d).padStart(2, '0')}`;
             const dayTasks = tasks.filter(t => t.due.startsWith(dateStr));
             const isToday = d === todayDayNum;
@@ -129,8 +132,12 @@ export const plannerView = {
                         ${dayTasks.map(t => {
                             const course = courses.find(c => c.id === t.courseId);
                             const label = course ? course.code : "Task";
+                            const courseColor = course ? course.color : "rose";
+                            const tagTheme = this.getTagTheme(courseColor);
+
                             return `
                                 <span class="calendar-event ${t.type} ${t.status === 'done' ? 'opacity-50 line-through' : ''}" 
+                                      style="background-color: var(--tag-${tagTheme}-bg); color: var(--tag-${tagTheme}-text);"
                                       title="${t.title}" data-task-id="${t.id}">
                                     ${label}: ${t.title}
                                 </span>
@@ -141,7 +148,6 @@ export const plannerView = {
             `;
         }
 
-        // Render next month padding to make full grid of 5 or 6 rows (total cells = 35 or 42)
         const totalCellsSoFar = startDayOfWeek + totalDays;
         const totalGridCells = totalCellsSoFar > 35 ? 42 : 35;
         for (let n = 1; n <= totalGridCells - totalCellsSoFar; n++) {
@@ -154,7 +160,6 @@ export const plannerView = {
         `;
         container.innerHTML = calendarHTML;
 
-        // Add task click routing
         container.querySelectorAll('.calendar-event').forEach(el => {
             el.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -163,7 +168,6 @@ export const plannerView = {
             });
         });
 
-        // Add task-by-cell double-click modal
         container.querySelectorAll('.calendar-cell:not(.muted)').forEach(cell => {
             cell.addEventListener('dblclick', () => {
                 const day = cell.getAttribute('data-day');
@@ -173,7 +177,6 @@ export const plannerView = {
         });
     },
 
-    // 2. Render Kanban Mode (To Do / In Progress / Done)
     renderKanban(container, tasks) {
         const columns = {
             todo: { title: "To Do", badgeColor: "text-rose", list: [] },
@@ -186,16 +189,14 @@ export const plannerView = {
         });
 
         const courses = store.getCourses();
-
-        let kanbanHTML = `<div class="kanban-board p-4">`;
+        let kanbanHTML = `<div class="kanban-board p-3">`;
 
         Object.keys(columns).forEach(status => {
             const col = columns[status];
             kanbanHTML += `
-                <div class="kanban-col glass-panel" data-status="${status}">
+                <div class="kanban-col" data-status="${status}">
                     <div class="kanban-col-header">
                         <h4 class="kanban-col-title">
-                            <i class="fa-solid fa-circle ${col.badgeColor}" style="font-size: 8px;"></i>
                             <span>${col.title}</span>
                         </h4>
                         <span class="kanban-card-count">${col.list.length}</span>
@@ -205,27 +206,27 @@ export const plannerView = {
                         ${col.list.map(t => {
                             const course = courses.find(c => c.id === t.courseId);
                             const courseCode = course ? course.code : "General";
-                            const color = course ? course.color : "muted";
+                            const color = course ? course.color : "rose";
+                            const tagTheme = this.getTagTheme(color);
                             const dueDate = new Date(t.due).toLocaleDateString([], { month: 'short', day: 'numeric' });
                             
                             return `
                                 <div class="kanban-card" draggable="true" data-task-id="${t.id}">
-                                    <span class="kanban-card-tag" style="background-color: rgba(var(--color-${color}), 0.1); color: var(--color-${color});">
+                                    <span class="kanban-card-tag" style="background-color: var(--tag-${tagTheme}-bg); color: var(--tag-${tagTheme}-text);">
                                         ${courseCode}
                                     </span>
                                     <h5 class="kanban-card-title">${t.title}</h5>
                                     
                                     <div class="kanban-card-meta">
                                         <div class="kanban-card-date">
-                                            <i class="fa-regular fa-clock"></i>
-                                            <span>${dueDate}</span>
+                                            <span>📅 ${dueDate}</span>
                                         </div>
                                         <div class="d-flex gap-2">
-                                            <button class="kanban-edit-btn" data-task-id="${t.id}" title="Edit Task">
-                                                <i class="fa-solid fa-pen" style="font-size: 11px;"></i>
+                                            <button class="kanban-edit-btn" data-task-id="${t.id}" title="Edit">
+                                                <i class="fa-solid fa-pen" style="font-size: 10px;"></i>
                                             </button>
-                                            <button class="kanban-delete-btn" data-task-id="${t.id}" title="Delete Task">
-                                                <i class="fa-solid fa-trash" style="font-size: 11px; color: var(--color-rose);"></i>
+                                            <button class="kanban-delete-btn" data-task-id="${t.id}" title="Delete">
+                                                <i class="fa-solid fa-trash" style="font-size: 10px; color: var(--color-rose);"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -240,10 +241,8 @@ export const plannerView = {
         kanbanHTML += `</div>`;
         container.innerHTML = kanbanHTML;
 
-        // Implement Drag and Drop Mechanics
         this.setupDragAndDrop(container);
 
-        // Wire edit & delete keys
         container.querySelectorAll('.kanban-edit-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const id = btn.getAttribute('data-task-id');
@@ -266,7 +265,7 @@ export const plannerView = {
         cards.forEach(card => {
             card.addEventListener('dragstart', (e) => {
                 e.dataTransfer.setData('text/plain', card.getAttribute('data-task-id'));
-                card.style.opacity = '0.5';
+                card.style.opacity = '0.4';
             });
 
             card.addEventListener('dragend', () => {
@@ -304,22 +303,21 @@ export const plannerView = {
         });
     },
 
-    // 3. Render List View Mode
     renderList(container, tasks) {
         const courses = store.getCourses();
 
         let listHTML = `
-            <div class="p-4 overflow-x-auto">
-                <table style="width:100%; border-collapse:collapse; text-align:left; font-size:13px;">
+            <div class="p-3 overflow-x-auto">
+                <table style="width:100%; border-collapse:collapse; text-align:left; font-size:12.5px;">
                     <thead>
-                        <tr style="border-bottom: 2px solid var(--border-color); color:var(--text-secondary); font-weight:700;">
-                            <th style="padding:12px;">Task Title</th>
-                            <th style="padding:12px;">Class Course</th>
-                            <th style="padding:12px;">Type</th>
-                            <th style="padding:12px;">Due Date</th>
-                            <th style="padding:12px;">Priority</th>
-                            <th style="padding:12px;">Status</th>
-                            <th style="padding:12px; text-align:right;">Actions</th>
+                        <tr style="border-bottom: 1.5px solid var(--border-color); color:var(--text-secondary); font-weight:600;">
+                            <th style="padding:10px 8px;">Task Title</th>
+                            <th style="padding:10px 8px;">Course</th>
+                            <th style="padding:10px 8px;">Type</th>
+                            <th style="padding:10px 8px;">Due Date</th>
+                            <th style="padding:10px 8px;">Priority</th>
+                            <th style="padding:10px 8px;">Status</th>
+                            <th style="padding:10px 8px; text-align:right;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -328,8 +326,8 @@ export const plannerView = {
         if (tasks.length === 0) {
             listHTML += `
                 <tr>
-                    <td colspan="7" style="padding:40px; text-align:center; color:var(--text-muted);">
-                        No tasks found matching query filters.
+                    <td colspan="7" style="padding:32px; text-align:center; color:var(--text-muted);">
+                        No tasks found in workspace.
                     </td>
                 </tr>
             `;
@@ -337,38 +335,45 @@ export const plannerView = {
             listHTML += tasks.map(t => {
                 const course = courses.find(c => c.id === t.courseId);
                 const courseCode = course ? course.code : "General";
-                const courseColor = course ? course.color : "muted";
+                const color = course ? course.color : "rose";
+                const tagTheme = this.getTagTheme(color);
                 const dateStr = new Date(t.due).toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
-                let statusBadge = `<span class="partner-tag" style="background-color:rgba(244,63,94,0.1); color:var(--color-rose);">To Do</span>`;
-                if (t.status === 'in-progress') {
-                    statusBadge = `<span class="partner-tag" style="background-color:rgba(245,158,11,0.1); color:var(--color-amber);">In Progress</span>`;
-                } else if (t.status === 'done') {
-                    statusBadge = `<span class="partner-tag" style="background-color:rgba(16,185,129,0.1); color:var(--color-emerald);">Done</span>`;
-                }
+                let statusColor = "red";
+                let statusName = "To Do";
+                if (t.status === 'in-progress') { statusColor = "amber"; statusName = "In Progress"; }
+                else if (t.status === 'done') { statusColor = "emerald"; statusName = "Done"; }
 
-                let prioBadge = "🟡 Medium";
-                if (t.priority === 'high') prioBadge = "🔴 High";
-                if (t.priority === 'low') prioBadge = "🟢 Low";
+                let prioColor = "red";
+                if (t.priority === 'medium') prioColor = "amber";
+                if (t.priority === 'low') prioColor = "blue";
 
                 return `
                     <tr style="border-bottom:1px solid var(--border-color); transition: var(--transition-smooth);" class="list-row-hover">
-                        <td style="padding:14px 12px; font-weight:600; color:var(--text-primary);">${t.title}</td>
-                        <td style="padding:14px 12px;">
-                            <span class="partner-tag" style="background-color: rgba(var(--color-${courseColor}), 0.1); color: var(--color-${courseColor});">
+                        <td style="padding:10px 8px; font-weight:500; color:var(--text-primary);">${t.title}</td>
+                        <td style="padding:10px 8px;">
+                            <span class="partner-tag" style="background-color: var(--tag-${tagTheme}-bg); color: var(--tag-${tagTheme}-text);">
                                 ${courseCode}
                             </span>
                         </td>
-                        <td style="padding:14px 12px; text-transform:capitalize; color:var(--text-secondary);">${t.type}</td>
-                        <td style="padding:14px 12px; color:var(--text-muted);">${dateStr}</td>
-                        <td style="padding:14px 12px;">${prioBadge}</td>
-                        <td style="padding:14px 12px;">${statusBadge}</td>
-                        <td style="padding:14px 12px; text-align:right;">
-                            <button class="list-edit-btn btn btn-secondary btn-sm" data-task-id="${t.id}" style="padding:6px 10px; margin-right:4px;">
+                        <td style="padding:10px 8px; text-transform:capitalize; color:var(--text-secondary);">${t.type}</td>
+                        <td style="padding:10px 8px; color:var(--text-muted);">${dateStr}</td>
+                        <td style="padding:10px 8px;">
+                            <span class="partner-tag" style="background-color: var(--tag-${prioColor}-bg); color: var(--tag-${prioColor}-text); text-transform: capitalize;">
+                                ${t.priority}
+                            </span>
+                        </td>
+                        <td style="padding:10px 8px;">
+                            <span class="partner-tag" style="background-color: var(--tag-${statusColor}-bg); color: var(--tag-${statusColor}-text);">
+                                ${statusName}
+                            </span>
+                        </td>
+                        <td style="padding:10px 8px; text-align:right;">
+                            <button class="list-edit-btn" data-task-id="${t.id}" style="margin-right:4px;">
                                 <i class="fa-solid fa-pen"></i>
                             </button>
-                            <button class="list-delete-btn btn btn-danger btn-sm" data-task-id="${t.id}" style="padding:6px 10px;">
-                                <i class="fa-solid fa-trash"></i>
+                            <button class="list-delete-btn" data-task-id="${t.id}">
+                                <i class="fa-solid fa-trash" style="color:var(--color-rose);"></i>
                             </button>
                         </td>
                     </tr>
@@ -383,13 +388,11 @@ export const plannerView = {
         `;
         container.innerHTML = listHTML;
 
-        // Row selectors hover styling in-line helper
         container.querySelectorAll('tbody tr').forEach(row => {
             row.addEventListener('mouseenter', () => { row.style.backgroundColor = 'var(--card-hover-bg)'; });
             row.addEventListener('mouseleave', () => { row.style.backgroundColor = 'transparent'; });
         });
 
-        // Event triggers
         container.querySelectorAll('.list-edit-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const id = btn.getAttribute('data-task-id');
@@ -413,7 +416,7 @@ export const plannerView = {
 
         document.getElementById('task-form').reset();
         document.getElementById('task-id').value = '';
-        document.getElementById('task-modal-title').textContent = "Add Assignment / Exam";
+        document.getElementById('task-modal-title').textContent = "📝 Add Assignment / Exam";
         
         if (defaultDate) {
             document.getElementById('task-due').value = defaultDate;
@@ -431,9 +434,8 @@ export const plannerView = {
         const task = store.getTasks().find(t => t.id === id);
         if (!task) return;
 
-        // Open task modal in editing state
         this.openNewTaskModal();
-        document.getElementById('task-modal-title').textContent = "Edit Assignment / Exam";
+        document.getElementById('task-modal-title').textContent = "📝 Edit Assignment / Exam";
         
         document.getElementById('task-id').value = task.id;
         document.getElementById('task-title').value = task.title;
@@ -456,7 +458,6 @@ export const plannerView = {
     },
 
     bindEvents() {
-        // Tab buttons routing trigger
         document.getElementById('btn-tab-calendar').addEventListener('click', () => {
             this.currentTab = 'calendar';
             this.renderSubView();
@@ -475,13 +476,11 @@ export const plannerView = {
             this.updateActiveTabStyles();
         });
 
-        // Filter event listener
         document.getElementById('planner-course-filter').addEventListener('change', (e) => {
             this.currentCourseFilter = e.target.value;
             this.renderSubView();
         });
 
-        // Add task button click
         document.getElementById('planner-add-task-btn').addEventListener('click', () => {
             this.openNewTaskModal();
         });
