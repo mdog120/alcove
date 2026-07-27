@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Alcove Class Chats & Study Partner Matcher Router Module
+   Alcove Class Chats & Study Partner Matcher Router Module (Beige-Mint Theme)
    ========================================================================== */
 
 import { store } from '../store.js';
@@ -31,7 +31,7 @@ export const chatView = {
                     </div>
                 </div>
 
-                <!-- Middle Panel: Chat Window messages board -->
+                <!-- Middle Panel: Chat Window -->
                 <div class="chat-window">
                     <div class="chat-window-header">
                         <div class="chat-window-title">
@@ -40,7 +40,7 @@ export const chatView = {
                         </div>
                         <div class="d-flex gap-2">
                             <button class="btn btn-secondary btn-sm" id="chat-btn-clear" style="padding:6px 12px; font-size:11px;">
-                                <i class="fa-solid fa-broom"></i> Clear Board
+                                <i class="fa-regular fa-trash-can"></i> Clear Board
                             </button>
                         </div>
                     </div>
@@ -53,7 +53,7 @@ export const chatView = {
                         <form id="chat-send-form">
                             <div class="chat-input-wrapper">
                                 <button type="button" class="chat-attach-btn" id="chat-mock-attach" title="Attach file">
-                                    <i class="fa-solid fa-paperclip"></i>
+                                    <i class="fa-regular fa-file"></i>
                                 </button>
                                 <input type="text" id="chat-input-field" placeholder="Type a message to your classmates..." required autocomplete="off">
                                 <button type="submit" class="chat-send-btn" title="Send Message">
@@ -67,12 +67,12 @@ export const chatView = {
                 <!-- Right Sidebar: Study Partner Matcher -->
                 <div class="study-matcher-panel" id="matcher-sidebar">
                     <div class="matcher-header">
-                        <h4>Study Partner Matcher</h4>
+                        <h4>Partner Matcher</h4>
                         <p>Find study buddies sharing your classes and habits.</p>
                     </div>
 
                     <div id="matcher-view-container" class="d-flex flex-column gap-3">
-                        <!-- Dynamic Matcher layout (questionnaire or matched profiles) -->
+                        <!-- Dynamic Matcher layout -->
                     </div>
                 </div>
 
@@ -86,7 +86,6 @@ export const chatView = {
         this.renderMatcher();
         this.bindEvents();
 
-        // Subscribe to store notifications for incoming chats
         const courses = store.getCourses();
         courses.forEach(c => {
             store.subscribe(`chat_${c.id}`, (msg) => {
@@ -96,7 +95,6 @@ export const chatView = {
             });
         });
 
-        // Also subscribe to dorm chat and DMs
         store.subscribe("chat_dorm-chat", (msg) => {
             if (this.activeChannel === 'dorm-chat' && !this.isDirectMessage) {
                 this.appendMessage(msg);
@@ -120,7 +118,6 @@ export const chatView = {
             </a>
         `).join('');
 
-        // Add campus/dorm chat
         channelsHTML += `
             <a href="#" class="chat-channel-item ${this.activeChannel === 'dorm-chat' && !this.isDirectMessage ? 'active' : ''}" data-channel="dorm-chat">
                 <span># dorm-chat</span>
@@ -129,12 +126,11 @@ export const chatView = {
 
         channelsContainer.innerHTML = channelsHTML;
 
-        // Render DMs lists
         const dmsContainer = document.getElementById('dms-list');
         if (this.isDirectMessage && this.activeDMUser) {
             dmsContainer.innerHTML = `
                 <a href="#" class="chat-channel-item active" data-channel="dm-room">
-                    <span>💬 ${this.activeDMUser.name}</span>
+                    <span><i class="fa-regular fa-comment"></i> ${this.activeDMUser.name}</span>
                 </a>
             `;
         } else {
@@ -143,7 +139,6 @@ export const chatView = {
             `;
         }
 
-        // Attach channel clicks
         document.querySelectorAll('.chat-channel-item').forEach(item => {
             item.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -175,20 +170,18 @@ export const chatView = {
                 headerDesc.textContent = `Dorm community board (112 residents)`;
             } else {
                 const course = store.getCourses().find(c => c.id === this.activeChannel);
-                const count = Math.floor(Math.random() * 30) + 20; // random mock count
+                const count = Math.floor(Math.random() * 30) + 20;
                 headerDesc.textContent = course ? `Group chat for ${course.code} ${course.name} (${count} members)` : `Class forum`;
             }
         }
 
-        // Get messages from store
         const messages = store.getMessages(this.activeChannel);
         
         if (messages.length === 0) {
             viewport.innerHTML = `
                 <div class="py-5 text-center text-secondary m-auto">
-                    <i class="fa-solid fa-comments text-indigo mb-3" style="font-size: 40px; opacity: 0.5;"></i>
-                    <p>Welcome to the beginning of the chat board!</p>
-                    <span class="font-11 text-muted">Be the first to say hello to your peers.</span>
+                    <p style="font-size: 20px; margin-bottom: 6px; color: var(--text-muted);"><i class="fa-regular fa-comment-dots"></i></p>
+                    <p class="font-12">Welcome to the beginning of the board!</p>
                 </div>
             `;
             return;
@@ -210,12 +203,9 @@ export const chatView = {
 
     appendMessage(msg) {
         const viewport = document.getElementById('chat-messages-viewport');
-        
-        // Remove empty state placeholder if present
         const placeholder = viewport.querySelector('.m-auto');
         if (placeholder) placeholder.remove();
 
-        // Check if there is an active typing indicator and remove it
         const indicator = viewport.querySelector('.typing-indicator-bubble');
         if (indicator) indicator.remove();
 
@@ -236,8 +226,6 @@ export const chatView = {
 
     showTypingIndicator() {
         const viewport = document.getElementById('chat-messages-viewport');
-        
-        // Don't show duplicates
         if (viewport.querySelector('.typing-indicator-bubble')) return;
 
         const indicator = document.createElement('div');
@@ -257,67 +245,61 @@ export const chatView = {
         viewport.scrollTop = viewport.scrollHeight;
     },
 
-    // Study partner matcher render
     renderMatcher() {
         const container = document.getElementById('matcher-view-container');
-        
-        // Check if user has completed questionnaire (mocked with localStorage status)
         const matchedStatus = localStorage.getItem('alcove_matcher_done') === 'true';
 
         if (!matchedStatus) {
-            // Render Questionnaire Form
             container.innerHTML = `
                 <div class="glass-panel p-3">
                     <form id="matcher-setup-form" class="matcher-form">
                         <div class="form-group mb-2">
-                            <label for="match-subject" style="font-size:10px;">Target Subject</label>
-                            <select id="match-subject" style="padding:6px; font-size:11px;">
-                                <option value="cs-106b">CS 106B (Coding)</option>
-                                <option value="math-51">MATH 51 (Linear Algebra)</option>
-                                <option value="bio-83">BIO 83 (Biochemistry)</option>
+                            <label for="match-subject" style="font-size:10px;">Subject</label>
+                            <select id="match-subject" style="padding:5px; font-size:11px;">
+                                <option value="cs-106b">CS 106B</option>
+                                <option value="math-51">MATH 51</option>
+                                <option value="bio-83">BIO 83</option>
                             </select>
                         </div>
                         <div class="form-group mb-2">
-                            <label for="match-style" style="font-size:10px;">Your Study Style</label>
-                            <select id="match-style" style="padding:6px; font-size:11px;">
-                                <option value="quiet">Silent Library Focus</option>
-                                <option value="group">Collaborative Cafe Chat</option>
-                                <option value="flash">Flashcards / Explaining</option>
+                            <label for="match-style" style="font-size:10px;">Study Style</label>
+                            <select id="match-style" style="padding:5px; font-size:11px;">
+                                <option value="quiet">Quiet Library</option>
+                                <option value="group">Cafe Collaboration</option>
+                                <option value="flash">Explaining/Cards</option>
                             </select>
                         </div>
                         <div class="form-group mb-2">
-                            <label for="match-time" style="font-size:10px;">Preferred Time</label>
-                            <select id="match-time" style="padding:6px; font-size:11px;">
-                                <option value="morning">Early Morning</option>
+                            <label for="match-time" style="font-size:10px;">Time</label>
+                            <select id="match-time" style="padding:5px; font-size:11px;">
+                                <option value="morning">Mornings</option>
                                 <option value="afternoon">Afternoons</option>
-                                <option value="night">Night Owl</option>
+                                <option value="night">Nights</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-sm w-100 mt-2" style="font-size:11px;">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> Match Me Now!
+                        <button type="submit" class="btn btn-primary btn-sm w-100 mt-2" style="font-size:11.5px;">
+                            Match Now
                         </button>
                     </form>
                 </div>
             `;
 
-            // Bind questionnaire submit
             setTimeout(() => {
                 const form = document.getElementById('matcher-setup-form');
                 if (form) {
                     form.onsubmit = (e) => {
                         e.preventDefault();
                         localStorage.setItem('alcove_matcher_done', 'true');
-                        window.app.showToast("Finding best matches for your study profile...", "info");
+                        window.app.showToast("Finding best matches...", "info");
                         
                         setTimeout(() => {
-                            window.app.showToast("Found 3 study partners!", "success");
+                            window.app.showToast("Matches found!", "success");
                             this.renderMatcher();
-                        }, 1200);
+                        }, 800);
                     };
                 }
             }, 50);
         } else {
-            // Render matched partners cards
             const partners = store.getPartners();
             
             container.innerHTML = `
@@ -335,25 +317,23 @@ export const chatView = {
                                 ${p.subjects.split(', ').map(sub => `<span class="partner-tag">${sub}</span>`).join('')}
                             </div>
                             <button class="btn btn-outline-indigo btn-sm w-100 partner-chat-btn" data-partner-id="${p.id}" style="padding:4px; font-size:11px;">
-                                <i class="fa-regular fa-comment"></i> Direct Message
+                                Message
                             </button>
                         </div>
                     `).join('')}
                     
                     <button class="btn btn-secondary btn-sm w-100" id="reset-matcher-btn" style="font-size:11px;">
-                        <i class="fa-solid fa-arrows-rotate"></i> Reset Preferences
+                        Reset Preferences
                     </button>
                 </div>
             `;
 
-            // Bind click to reset matcher
             setTimeout(() => {
                 document.getElementById('reset-matcher-btn').addEventListener('click', () => {
                     localStorage.removeItem('alcove_matcher_done');
                     this.renderMatcher();
                 });
 
-                // Direct message button routing
                 container.querySelectorAll('.partner-chat-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         e.stopPropagation();
@@ -373,7 +353,6 @@ export const chatView = {
         this.activeChannel = 'dm-room';
         this.activeDMUser = partner;
 
-        // Initialize Direct Message room in store with a mock welcoming message
         const dmRoomMsgs = store.getMessages('dm-room');
         if (dmRoomMsgs.length === 0) {
             store.addMessage('dm-room', `Hey Alex! I saw we matched on Alcove for studying. I'm free to meet up at the library tomorrow if you want to work on CS problem sets!`, false, partner.name, partner.avatar);
@@ -393,14 +372,11 @@ export const chatView = {
             const text = input.value.trim();
             if (!text) return;
 
-            // Save outgoing message
             const newMsg = store.addMessage(this.activeChannel, text, true);
             this.appendMessage(newMsg);
             input.value = '';
 
-            // Trigger typing indicator and bot response if it's not a DM (or even if it is a DM!)
             if (this.isDirectMessage && this.activeDMUser) {
-                // DM simulation response
                 this.showTypingIndicator();
                 setTimeout(() => {
                     const dmReplies = [
@@ -414,15 +390,13 @@ export const chatView = {
                     this.appendMessage(replyMsg);
                 }, 1600);
             } else {
-                // Channel bot replies
                 this.showTypingIndicator();
                 store.triggerBotReply(this.activeChannel, text);
             }
         };
 
-        // Clear chat board logic
         document.getElementById('chat-btn-clear').addEventListener('click', () => {
-            if (confirm("Are you sure you want to clear this chat history?")) {
+            if (confirm("Clear this chat history?")) {
                 const chats = JSON.parse(localStorage.getItem('alcove_chats') || '{}');
                 chats[this.activeChannel] = [];
                 localStorage.setItem('alcove_chats', JSON.stringify(chats));
@@ -431,7 +405,6 @@ export const chatView = {
             }
         });
 
-        // Paperclip click attachment mock
         document.getElementById('chat-mock-attach').addEventListener('click', () => {
             const fileName = prompt("Upload a PDF note or code file:");
             if (fileName && fileName.trim()) {
@@ -442,7 +415,6 @@ export const chatView = {
             }
         });
 
-        // Top direct message header trigger
         const startDm = document.getElementById('start-dm-btn');
         if (startDm) {
             startDm.addEventListener('click', () => {

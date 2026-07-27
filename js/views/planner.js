@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Alcove Planner & Calendar Router Module (Notion Aesthetics Edition)
+   Alcove Planner & Calendar Router Module (Beige-Mint Theme)
    ========================================================================== */
 
 import { store } from '../store.js';
@@ -14,16 +14,16 @@ export const plannerView = {
                 <div class="d-flex align-items-center gap-3">
                     <h2 class="font-heading font-bold font-24">Class Scheduler</h2>
                     
-                    <!-- View Switching Tabs (Notion style) -->
+                    <!-- View Switching Tabs (Notion style - Outline icons) -->
                     <div class="view-tabs">
                         <button class="tab-btn ${this.currentTab === 'calendar' ? 'active' : ''}" id="btn-tab-calendar">
-                            📅 Calendar
+                            <i class="fa-regular fa-calendar"></i> Calendar
                         </button>
                         <button class="tab-btn ${this.currentTab === 'kanban' ? 'active' : ''}" id="btn-tab-kanban">
-                            📋 Kanban Board
+                            <i class="fa-regular fa-clone"></i> Kanban Board
                         </button>
                         <button class="tab-btn ${this.currentTab === 'list' ? 'active' : ''}" id="btn-tab-list">
-                            📝 List View
+                            <i class="fa-regular fa-rectangle-list"></i> List View
                         </button>
                     </div>
                 </div>
@@ -36,7 +36,7 @@ export const plannerView = {
                     </select>
 
                     <button class="btn btn-primary" id="planner-add-task-btn" style="height:32px;">
-                        ➕ New Task
+                        New Task
                     </button>
                 </div>
             </div>
@@ -84,7 +84,6 @@ export const plannerView = {
         }
     },
 
-    // Helper to map mock colors to Notion tag themes
     getTagTheme(courseColor) {
         let tag = 'blue';
         if (courseColor === 'amber') tag = 'amber';
@@ -219,7 +218,7 @@ export const plannerView = {
                                     
                                     <div class="kanban-card-meta">
                                         <div class="kanban-card-date">
-                                            <span>📅 ${dueDate}</span>
+                                            <span><i class="fa-regular fa-clock"></i> ${dueDate}</span>
                                         </div>
                                         <div class="d-flex gap-2">
                                             <button class="kanban-edit-btn" data-task-id="${t.id}" title="Edit">
@@ -416,7 +415,7 @@ export const plannerView = {
 
         document.getElementById('task-form').reset();
         document.getElementById('task-id').value = '';
-        document.getElementById('task-modal-title').textContent = "📝 Add Assignment / Exam";
+        document.getElementById('task-modal-title').innerHTML = "<i class='fa-regular fa-edit'></i> Add Assignment / Exam";
         
         if (defaultDate) {
             document.getElementById('task-due').value = defaultDate;
@@ -435,7 +434,7 @@ export const plannerView = {
         if (!task) return;
 
         this.openNewTaskModal();
-        document.getElementById('task-modal-title').textContent = "📝 Edit Assignment / Exam";
+        document.getElementById('task-modal-title').innerHTML = "<i class='fa-regular fa-edit'></i> Edit Assignment / Exam";
         
         document.getElementById('task-id').value = task.id;
         document.getElementById('task-title').value = task.title;

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Alcove Dashboard View Router Module (Notion Aesthetics Edition)
+   Alcove Dashboard View Router Module (Beige-Mint Theme)
    ========================================================================== */
 
 import { store } from '../store.js';
@@ -10,7 +10,7 @@ export const dashboardView = {
             <!-- Dashboard Hero Section (Notion Callout style) -->
             <section class="dashboard-hero glass-panel">
                 <div class="hero-welcome">
-                    <span style="font-size: 26px; line-height: 1; padding-top: 4px;">👋</span>
+                    <img src="logo.jpg" alt="Alcove" class="hero-welcome-logo">
                     <div>
                         <h1 id="welcome-greeting">Hello, Alex!</h1>
                         <p>Welcome back to your workspace. Here is an overview of your academic life today.</p>
@@ -32,26 +32,26 @@ export const dashboardView = {
                 </div>
             </section>
 
-            <!-- Quick Actions Panel -->
+            <!-- Quick Actions Panel (Monochrome Icons) -->
             <section class="quick-actions-bar">
                 <div class="quick-action-card glass-panel" id="qa-add-task">
-                    <span class="quick-action-icon">➕</span>
+                    <span class="quick-action-icon"><i class="fa-regular fa-calendar-plus"></i></span>
                     <span>Add Task</span>
                 </div>
                 <div class="quick-action-card glass-panel" id="qa-gpa">
-                    <span class="quick-action-icon">🧮</span>
+                    <span class="quick-action-icon"><i class="fa-regular fa-chart-bar"></i></span>
                     <span>GPA Calculator</span>
                 </div>
                 <div class="quick-action-card glass-panel" id="qa-chat">
-                    <span class="quick-action-icon">💬</span>
+                    <span class="quick-action-icon"><i class="fa-regular fa-comments"></i></span>
                     <span>Class Chats</span>
                 </div>
                 <div class="quick-action-card glass-panel" id="qa-notes">
-                    <span class="quick-action-icon">📝</span>
+                    <span class="quick-action-icon"><i class="fa-regular fa-file-lines"></i></span>
                     <span>Notes Library</span>
                 </div>
                 <div class="quick-action-card glass-panel" id="qa-sell">
-                    <span class="quick-action-icon">🛍️</span>
+                    <span class="quick-action-icon"><i class="fa-regular fa-handshake"></i></span>
                     <span>Sell Book / Gear</span>
                 </div>
             </section>
@@ -62,7 +62,7 @@ export const dashboardView = {
                 <!-- Today's Schedule -->
                 <section class="dashboard-section glass-panel p-4">
                     <div class="dashboard-section-title">
-                        <span>🏫 Today's Class Schedule</span>
+                        <span><i class="fa-regular fa-calendar"></i> Today's Class Schedule</span>
                         <span class="text-muted font-12" id="current-day-label">Tuesday Classes</span>
                     </div>
                     <div class="schedule-widget-list" id="dash-schedule-container">
@@ -73,7 +73,7 @@ export const dashboardView = {
                 <!-- Urgent Tasks/Deadlines -->
                 <section class="dashboard-section glass-panel p-4">
                     <div class="dashboard-section-title">
-                        <span>⌛ Urgent Deadlines</span>
+                        <span><i class="fa-regular fa-clock"></i> Urgent Deadlines</span>
                         <a href="#planner" class="text-indigo font-12 font-semibold" style="color: var(--color-primary) !important;">View Planner &rarr;</a>
                     </div>
                     <div class="task-summary-list" id="dash-tasks-container">
@@ -146,8 +146,8 @@ export const dashboardView = {
         if (todayClasses.length === 0) {
             container.innerHTML = `
                 <div class="py-5 text-center text-secondary">
-                    <p style="font-size: 24px; margin-bottom: 8px;">📚</p>
-                    <p class="font-12 text-muted">No classes scheduled for today. Focus on self-study!</p>
+                    <p style="font-size: 20px; margin-bottom: 6px; color: var(--text-muted);"><i class="fa-regular fa-folder-open"></i></p>
+                    <p class="font-12 text-muted">No classes scheduled for today.</p>
                 </div>
             `;
             return;
@@ -166,10 +166,10 @@ export const dashboardView = {
                     </div>
                     <div class="schedule-details">
                         <h4>${c.code}: ${c.name}</h4>
-                        <span class="schedule-location">📍 ${c.room}</span>
+                        <span class="schedule-location"><i class="fa-regular fa-compass"></i> ${c.room}</span>
                     </div>
-                    <a href="#chat" class="btn btn-secondary btn-sm" style="padding: 5px 10px; font-size: 11.5px;">
-                        💬 Chat
+                    <a href="#chat" class="btn btn-secondary btn-sm" style="padding: 4px 8px; font-size: 11px;">
+                        Message
                     </a>
                 </div>
             `;
@@ -193,7 +193,7 @@ export const dashboardView = {
         if (urgentTasks.length === 0) {
             container.innerHTML = `
                 <div class="py-5 text-center text-secondary">
-                    <p style="font-size: 24px; margin-bottom: 8px;">✅</p>
+                    <p style="font-size: 20px; margin-bottom: 6px; color: var(--color-primary);"><i class="fa-regular fa-calendar-check"></i></p>
                     <p class="font-12 text-muted">All caught up! No pending deadlines.</p>
                 </div>
             `;
@@ -251,7 +251,7 @@ export const dashboardView = {
 
             document.getElementById('task-form').reset();
             document.getElementById('task-id').value = '';
-            document.getElementById('task-modal-title').textContent = "📝 Add Assignment / Exam";
+            document.getElementById('task-modal-title').innerHTML = "<i class='fa-regular fa-edit'></i> Add Assignment / Exam";
             
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);

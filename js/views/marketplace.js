@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Alcove Textbook & Gear Marketplace Router Module (Notion Aesthetics Edition)
+   Alcove Textbook & Gear Marketplace Router Module (Beige-Mint Theme)
    ========================================================================== */
 
 import { store } from '../store.js';
@@ -12,9 +12,9 @@ export const marketplaceView = {
     template() {
         return `
             <div class="planner-controls">
-                <h2 class="font-heading font-bold font-24">🛍️ Campus Marketplace</h2>
+                <h2 class="font-heading font-bold font-24"><i class="fa-regular fa-handshake"></i> Campus Marketplace</h2>
                 <button class="btn btn-primary" id="market-sell-btn">
-                    ➕ List Item for Sale
+                    List Item for Sale
                 </button>
             </div>
 
@@ -90,12 +90,10 @@ export const marketplaceView = {
         }
 
         container.innerHTML = items.map(item => {
-            let iconEmoji = "📘";
-            if (item.imgType === "calculator") iconEmoji = "🧮";
-            if (item.imgType === "laptop") iconEmoji = "💻";
-            if (item.imgType === "flask") iconEmoji = "🧪";
-            if (item.imgType === "book-red") iconEmoji = "📕";
-            if (item.imgType === "book-green") iconEmoji = "📗";
+            let iconHtml = `<i class="fa-regular fa-bookmark" style="font-size:32px; color:var(--color-primary);"></i>`;
+            if (item.imgType === "calculator") iconHtml = `<i class="fa-solid fa-calculator" style="font-size:32px; color:var(--color-primary);"></i>`;
+            if (item.imgType === "laptop") iconHtml = `<i class="fa-solid fa-desktop" style="font-size:32px; color:var(--color-primary);"></i>`;
+            if (item.imgType === "flask") iconHtml = `<i class="fa-solid fa-flask" style="font-size:32px; color:var(--color-primary);"></i>`;
 
             let conditionLabel = "Good";
             let condTag = "blue";
@@ -108,7 +106,7 @@ export const marketplaceView = {
             return `
                 <div class="marketplace-card glass-panel">
                     <div class="item-image-wrapper">
-                        <span class="item-thumb-placeholder">${iconEmoji}</span>
+                        <span class="item-thumb-placeholder">${iconHtml}</span>
                         <div class="item-price-tag">$${item.price}</div>
                     </div>
                     

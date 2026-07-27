@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Alcove Notion-Inspired View Components (Flat, Minimal, Clean Layouts)
+   Alcove Notion-Inspired View Components (Beige, Mint Green, and Gray Edition)
    ========================================================================== */
 
 /* ==========================================================================
@@ -11,58 +11,61 @@
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-md);
-    padding: 20px 24px;
-    margin-bottom: 24px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: relative;
-    overflow: hidden;
-}
-
-.dashboard-hero::before {
-    display: none; /* Strip out visual glowing gradient circles */
 }
 
 .hero-welcome {
     display: flex;
-    gap: 16px;
-    align-items: flex-start;
+    gap: 12px;
+    align-items: center;
+}
+
+.hero-welcome-logo {
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+    object-fit: cover;
+    border: 1px solid var(--border-color);
 }
 
 .hero-welcome h1 {
     font-family: var(--font-heading);
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     color: var(--text-primary);
 }
 
 .hero-welcome p {
     color: var(--text-secondary);
-    font-size: 13.5px;
+    font-size: 12.5px;
 }
 
 .hero-stats {
     display: flex;
-    gap: 24px;
+    gap: 20px;
 }
 
 .hero-stat-item {
     text-align: right;
     border-left: 1px solid var(--border-color);
-    padding-left: 16px;
+    padding-left: 14px;
 }
 
 .hero-stat-val {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     color: var(--text-primary);
     display: block;
 }
 
 .hero-stat-lbl {
-    font-size: 10px;
+    font-size: 9px;
     color: var(--text-muted);
     font-weight: 500;
     text-transform: uppercase;
@@ -73,8 +76,8 @@
 .dashboard-grid {
     display: grid;
     grid-template-columns: 1.5fr 1fr;
-    gap: 24px;
-    margin-bottom: 24px;
+    gap: 20px;
+    margin-bottom: 20px;
 }
 
 @media(max-width: 992px) {
@@ -84,9 +87,9 @@
 }
 
 .dashboard-section-title {
-    font-size: 14px;
+    font-size: 13.5px;
     font-weight: 600;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
     color: var(--text-primary);
     display: flex;
     align-items: center;
@@ -97,18 +100,18 @@
 .quick-actions-bar {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: 12px;
-    margin-bottom: 24px;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
 .quick-action-card {
-    padding: 14px;
+    padding: 10px 12px;
     text-align: left;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     border-radius: var(--border-radius-sm);
-    background: var(--bg-primary);
+    background: var(--panel-bg);
     border: 1px solid var(--border-color);
     transition: var(--transition-smooth);
     cursor: pointer;
@@ -116,23 +119,21 @@
 
 .quick-action-card:hover {
     background-color: var(--card-hover-bg);
-    transform: none;
-    box-shadow: none;
     border-color: var(--border-hover);
 }
 
 .quick-action-icon {
-    font-size: 16px;
-    width: 28px;
-    height: 28px;
-    display: flex;
+    font-size: 13px;
+    color: var(--color-primary);
+    width: 20px;
+    text-align: center;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 4px;
 }
 
 .quick-action-card span {
-    font-size: 12.5px;
+    font-size: 12px;
     font-weight: 500;
     color: var(--text-primary);
 }
@@ -148,9 +149,9 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px;
+    padding: 10px 12px;
     border-radius: var(--border-radius-sm);
-    background: var(--bg-primary);
+    background: var(--panel-bg);
     border: 1px solid var(--border-color);
 }
 
@@ -159,12 +160,12 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: 48px;
+    height: 48px;
     border-radius: var(--border-radius-sm);
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    font-size: 12px;
+    font-size: 11.5px;
 }
 
 .schedule-time {
@@ -173,7 +174,7 @@
 }
 
 .schedule-period {
-    font-size: 8px;
+    font-size: 7.5px;
     font-weight: 500;
     color: var(--text-muted);
 }
@@ -183,18 +184,18 @@
 }
 
 .schedule-details h4 {
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 600;
-    margin-bottom: 2px;
+    margin-bottom: 1px;
 }
 
 .schedule-details p {
-    font-size: 11.5px;
+    font-size: 11px;
     color: var(--text-secondary);
 }
 
 .schedule-location {
-    font-size: 11px;
+    font-size: 10.5px;
     color: var(--text-muted);
     display: flex;
     align-items: center;
@@ -212,9 +213,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 12px;
+    padding: 8px 12px;
     border-radius: var(--border-radius-sm);
-    background: var(--bg-primary);
+    background: var(--panel-bg);
     border: 1px solid var(--border-color);
 }
 
@@ -223,14 +224,14 @@
 .task-summary-card.low { border-left: 3px solid var(--tag-emerald-text); }
 
 .task-sum-title {
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 500;
-    margin-bottom: 2px;
+    margin-bottom: 1px;
     color: var(--text-primary);
 }
 
 .task-sum-meta {
-    font-size: 11px;
+    font-size: 10.5px;
     color: var(--text-secondary);
     display: flex;
     align-items: center;
@@ -238,21 +239,21 @@
 }
 
 .task-complete-btn {
-    width: 18px;
-    height: 18px;
-    border-radius: 3px; /* Notion style checkbox */
+    width: 16px;
+    height: 16px;
+    border-radius: var(--border-radius-sm);
     border: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 10px;
+    font-size: 9px;
     color: transparent;
     transition: var(--transition-smooth);
 }
 
 .task-complete-btn:hover {
     border-color: var(--color-primary);
-    background-color: var(--bg-tertiary);
+    background-color: var(--bg-secondary);
     color: var(--color-primary);
 }
 
@@ -264,9 +265,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 10px;
 }
 
 .view-tabs {
@@ -279,8 +280,8 @@
 }
 
 .tab-btn {
-    padding: 6px 12px;
-    font-size: 12.5px;
+    padding: 5px 10px;
+    font-size: 12px;
     font-weight: 500;
     color: var(--text-secondary);
     border-radius: var(--border-radius-sm);
@@ -288,14 +289,14 @@
 }
 
 .tab-btn.active {
-    background-color: var(--bg-primary);
+    background-color: var(--panel-bg);
     color: var(--text-primary);
-    box-shadow: 0 1px 2px rgba(15,15,15,0.05);
+    box-shadow: var(--panel-shadow);
 }
 
 /* Calendar Grid */
 .calendar-container {
-    padding: 16px;
+    padding: 12px;
 }
 
 .calendar-header-grid {
@@ -303,16 +304,16 @@
     grid-template-columns: repeat(7, 1fr);
     text-align: center;
     font-weight: 600;
-    font-size: 11.5px;
+    font-size: 11px;
     color: var(--text-secondary);
-    padding-bottom: 8px;
+    padding-bottom: 6px;
     border-bottom: 1px solid var(--border-color);
 }
 
 .calendar-days-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    grid-auto-rows: minmax(90px, 1fr);
+    grid-auto-rows: minmax(80px, 1fr);
     gap: 1px;
     background-color: var(--border-color);
     margin-top: 1px;
@@ -321,11 +322,11 @@
 }
 
 .calendar-cell {
-    background-color: var(--bg-primary);
-    padding: 6px;
+    background-color: var(--panel-bg);
+    padding: 4px;
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 2px;
     overflow-y: auto;
 }
 
@@ -336,7 +337,7 @@
 
 .calendar-date-num {
     font-weight: 600;
-    font-size: 11.5px;
+    font-size: 11px;
     color: var(--text-muted);
     margin-bottom: 2px;
 }
@@ -348,9 +349,9 @@
 }
 
 .calendar-event {
-    font-size: 9.5px;
+    font-size: 9px;
     font-weight: 500;
-    padding: 2px 4px;
+    padding: 1px 3px;
     border-radius: 3px;
     white-space: nowrap;
     overflow: hidden;
@@ -360,7 +361,6 @@
     border: 1px solid transparent;
 }
 
-/* Notion soft colors mapping for calendar tags */
 .calendar-event.assignment { background-color: var(--tag-blue-bg); color: var(--tag-blue-text); }
 .calendar-event.exam { background-color: var(--tag-red-bg); color: var(--tag-red-text); }
 .calendar-event.event { background-color: var(--tag-amber-bg); color: var(--tag-amber-text); }
@@ -370,7 +370,7 @@
 .kanban-board {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
+    gap: 14px;
 }
 
 @media(max-width: 768px) {
@@ -380,8 +380,8 @@
 }
 
 .kanban-col {
-    padding: 14px;
-    min-height: 460px;
+    padding: 12px;
+    min-height: 420px;
     background-color: var(--bg-secondary);
     border-radius: var(--border-radius-sm);
 }
@@ -390,11 +390,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
 .kanban-col-title {
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 600;
     display: flex;
     align-items: center;
@@ -403,9 +403,9 @@
 
 .kanban-card-count {
     background-color: var(--bg-tertiary);
-    padding: 1px 6px;
-    border-radius: 10px;
-    font-size: 10px;
+    padding: 1px 5px;
+    border-radius: 8px;
+    font-size: 9.5px;
     font-weight: 600;
     color: var(--text-muted);
 }
@@ -413,16 +413,16 @@
 .kanban-cards-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    min-height: 380px;
+    gap: 6px;
+    min-height: 350px;
 }
 
 .kanban-card {
-    padding: 12px;
-    background-color: var(--bg-primary);
+    padding: 10px;
+    background-color: var(--panel-bg);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-sm);
-    box-shadow: 0 1px 2px rgba(15,15,15,0.05);
+    box-shadow: var(--panel-shadow);
     cursor: grab;
     transition: var(--transition-smooth);
 }
@@ -432,18 +432,18 @@
 }
 
 .kanban-card-tag {
-    font-size: 9px;
+    font-size: 8.5px;
     font-weight: 600;
-    padding: 2px 5px;
+    padding: 1px 4px;
     border-radius: 3px;
     display: inline-block;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
 .kanban-card-title {
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 500;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     color: var(--text-primary);
 }
 
@@ -451,7 +451,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 11px;
+    font-size: 10.5px;
     color: var(--text-muted);
 }
 
@@ -465,7 +465,7 @@
     border: none;
     background: transparent;
     cursor: pointer;
-    padding: 2px;
+    padding: 1px;
     color: var(--text-muted);
 }
 .kanban-edit-btn:hover, .list-edit-btn:hover { color: var(--text-primary); }
@@ -477,7 +477,7 @@
 .gpa-grid {
     display: grid;
     grid-template-columns: 1fr 1.6fr;
-    gap: 24px;
+    gap: 20px;
 }
 
 @media(max-width: 992px) {
@@ -487,7 +487,7 @@
 }
 
 .gpa-card-score {
-    padding: 24px;
+    padding: 20px;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -497,9 +497,9 @@
 /* Circular GPA Meter */
 .gpa-gauge-container {
     position: relative;
-    width: 160px;
-    height: 160px;
-    margin-bottom: 16px;
+    width: 140px;
+    height: 140px;
+    margin-bottom: 12px;
 }
 
 .gpa-gauge-circle {
@@ -510,7 +510,7 @@
 
 .gpa-gauge-bg, .gpa-gauge-fill {
     fill: none;
-    stroke-width: 10;
+    stroke-width: 8;
 }
 
 .gpa-gauge-bg {
@@ -518,7 +518,7 @@
 }
 
 .gpa-gauge-fill {
-    stroke: var(--color-primary); /* Flat blue fill instead of glowing gradient */
+    stroke: var(--color-primary); /* Sage/Mint Green fill color */
     stroke-linecap: square;
     transition: stroke-dashoffset 0.6s ease;
 }
@@ -533,14 +533,14 @@
 }
 
 .gpa-gauge-value {
-    font-size: 36px;
+    font-size: 32px;
     font-weight: 700;
     line-height: 1;
     color: var(--text-primary);
 }
 
 .gpa-gauge-label {
-    font-size: 10.5px;
+    font-size: 10px;
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.3px;
@@ -550,16 +550,16 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     border-top: 1px solid var(--border-color);
-    padding-top: 16px;
-    margin-top: 12px;
+    padding-top: 12px;
+    margin-top: 10px;
 }
 
 .gpa-stat-row {
     display: flex;
     justify-content: space-between;
-    font-size: 12.5px;
+    font-size: 12px;
 }
 
 .gpa-stat-row span:first-child {
@@ -573,19 +573,19 @@
 
 /* Courses calculation list */
 .gpa-courses-panel {
-    padding: 20px;
+    padding: 16px;
 }
 
 .gpa-tabs {
     display: flex;
     border-bottom: 1px solid var(--border-color);
-    margin-bottom: 16px;
-    gap: 12px;
+    margin-bottom: 14px;
+    gap: 10px;
 }
 
 .gpa-tab-btn {
-    padding: 6px 2px;
-    font-size: 13px;
+    padding: 5px 2px;
+    font-size: 12.5px;
     font-weight: 500;
     color: var(--text-secondary);
     border-bottom: 2px solid transparent;
@@ -600,18 +600,18 @@
 .gpa-courses-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-bottom: 16px;
+    gap: 6px;
+    margin-bottom: 14px;
 }
 
 .gpa-course-row {
     display: grid;
     grid-template-columns: 2fr 1fr 1.2fr 1.5fr auto;
-    gap: 8px;
+    gap: 6px;
     align-items: center;
-    padding: 6px 10px;
+    padding: 5px 8px;
     border-radius: var(--border-radius-sm);
-    background-color: var(--bg-primary);
+    background-color: var(--panel-bg);
     border: 1px solid var(--border-color);
 }
 
@@ -619,13 +619,13 @@
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
     color: var(--text-primary);
-    padding: 4px 8px;
+    padding: 4px 6px;
     border-radius: 3px;
-    font-size: 12px;
+    font-size: 11.5px;
 }
 
 .gpa-course-name {
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 500;
     border: none !important;
     background: transparent !important;
@@ -639,7 +639,7 @@
 
 .gpa-remove-course {
     color: var(--text-muted);
-    font-size: 14px;
+    font-size: 13px;
 }
 .gpa-remove-course:hover { color: var(--color-rose); }
 
@@ -648,16 +648,16 @@
    ========================================================================== */
 
 .chat-container {
-    height: calc(100vh - 120px);
+    height: calc(100vh - 100px);
     display: grid;
-    grid-template-columns: 220px 1fr 260px;
+    grid-template-columns: 200px 1fr 240px;
     overflow: hidden;
     border-radius: var(--border-radius-sm);
 }
 
 @media(max-width: 1200px) {
     .chat-container {
-        grid-template-columns: 180px 1fr;
+        grid-template-columns: 170px 1fr;
     }
     .study-matcher-panel {
         display: none;
@@ -679,27 +679,27 @@
     border-right: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
-    padding: 12px;
+    padding: 10px;
 }
 
 .chat-group-label {
-    font-size: 10px;
+    font-size: 9.5px;
     font-weight: 600;
     text-transform: uppercase;
     color: var(--text-muted);
     letter-spacing: 0.3px;
-    margin-bottom: 8px;
-    margin-top: 14px;
+    margin-bottom: 6px;
+    margin-top: 12px;
 }
 
 .chat-channel-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 6px 10px;
+    padding: 5px 8px;
     border-radius: var(--border-radius-sm);
     color: var(--text-secondary);
-    font-size: 13px;
+    font-size: 12.5px;
     margin-bottom: 2px;
 }
 
@@ -718,42 +718,42 @@
 .chat-window {
     display: flex;
     flex-direction: column;
-    background-color: var(--bg-primary);
+    background-color: var(--panel-bg);
 }
 
 .chat-window-header {
-    padding: 12px 20px;
+    padding: 10px 16px;
     border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: var(--bg-primary);
+    background-color: var(--panel-bg);
 }
 
 .chat-window-title h3 {
-    font-size: 14px;
+    font-size: 13.5px;
     font-weight: 600;
     color: var(--text-primary);
 }
 
 .chat-window-title p {
-    font-size: 11px;
+    font-size: 10.5px;
     color: var(--text-muted);
 }
 
 .chat-messages {
     flex: 1;
     overflow-y: auto;
-    padding: 20px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
 }
 
 /* Message bubbles flat styles */
 .message-bubble {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     max-width: 80%;
 }
 
@@ -761,28 +761,28 @@
 .message-bubble.outgoing { align-self: flex-end; flex-direction: row-reverse; }
 
 .message-avatar {
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
 }
 
 .message-content-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 1px;
 }
 
 .message-sender {
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 600;
     color: var(--text-secondary);
 }
 
 .message-content {
-    padding: 8px 12px;
+    padding: 6px 10px;
     border-radius: 4px;
-    font-size: 13px;
-    line-height: 1.4;
+    font-size: 12.5px;
+    line-height: 1.35;
 }
 
 .incoming .message-content {
@@ -792,16 +792,13 @@
 }
 
 .outgoing .message-content {
-    background-color: var(--tag-blue-bg);
-    border: 1px solid rgba(35, 131, 226, 0.15);
-    color: var(--text-primary); /* Flat colored with dark text in light mode! */
-}
-:root[data-theme="dark"] .outgoing .message-content {
-    color: var(--text-primary);
+    background-color: var(--tag-emerald-bg); /* Warm Mint Green background for outgoing chats! */
+    border: 1px solid rgba(127, 154, 138, 0.2);
+    color: var(--tag-emerald-text);
 }
 
 .message-time {
-    font-size: 9px;
+    font-size: 8.5px;
     color: var(--text-muted);
     align-self: flex-end;
 }
@@ -811,93 +808,93 @@
 .typing-indicator-bubble {
     align-self: flex-start;
     display: flex;
-    gap: 3px;
-    padding: 8px 12px;
+    gap: 2px;
+    padding: 6px 10px;
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-radius: 4px;
 }
 
 .typing-dot {
-    width: 5px;
-    height: 5px;
+    width: 4px;
+    height: 4px;
     background-color: var(--text-muted);
 }
 
 /* Chat Send Input Box */
 .chat-input-bar {
-    padding: 12px 20px;
+    padding: 10px 16px;
     border-top: 1px solid var(--border-color);
 }
 
 .chat-input-wrapper {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     background-color: var(--input-bg);
     border: 1px solid var(--input-border);
     border-radius: var(--border-radius-sm);
-    padding: 4px 10px;
+    padding: 2px 8px;
 }
 
 .chat-input-wrapper input {
     flex: 1;
     border: none;
     background: transparent;
-    padding: 6px 2px;
-    font-size: 13px;
+    padding: 5px 2px;
+    font-size: 12.5px;
     color: var(--text-primary);
 }
 
 .chat-send-btn {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
     border-radius: 3px;
     background-color: var(--color-primary);
     color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 11px;
+    font-size: 10px;
 }
-.chat-send-btn:hover { background-color: var(--color-primary-hover); transform:none; }
+.chat-send-btn:hover { background-color: var(--color-primary-hover); }
 
 /* Study Partner Matcher (Right pane) */
 .study-matcher-panel {
     background-color: var(--bg-secondary);
     border-left: 1px solid var(--border-color);
-    padding: 16px;
+    padding: 14px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
 }
 
-.matcher-header h4 { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
-.matcher-header p { font-size: 11px; color: var(--text-secondary); }
+.matcher-header h4 { font-size: 12.5px; font-weight: 600; margin-bottom: 2px; }
+.matcher-header p { font-size: 10.5px; color: var(--text-secondary); }
 
 .study-partner-card {
-    padding: 12px;
-    background-color: var(--bg-primary);
+    padding: 10px;
+    background-color: var(--panel-bg);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-sm);
 }
 
 .partner-profile-header {
     display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
+    gap: 8px;
+    margin-bottom: 8px;
 }
 
-.partner-avatar { width: 28px; height: 28px; border-radius: 50%; }
-.partner-meta h5 { font-size: 12px; font-weight: 600; }
-.partner-meta p { font-size: 10px; color: var(--text-muted); }
+.partner-avatar { width: 26px; height: 26px; border-radius: 50%; }
+.partner-meta h5 { font-size: 11.5px; font-weight: 600; }
+.partner-meta p { font-size: 9.5px; color: var(--text-muted); }
 
-.partner-tags { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 10px; }
+.partner-tags { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 8px; }
 .partner-tag {
-    font-size: 9px;
+    font-size: 8.5px;
     font-weight: 500;
-    padding: 1px 4px;
+    padding: 1px 3px;
     border-radius: 3px;
     background-color: var(--bg-tertiary);
     color: var(--text-secondary);
@@ -910,7 +907,7 @@
 .notes-layout {
     display: grid;
     grid-template-columns: 1fr 1.8fr;
-    gap: 24px;
+    gap: 20px;
 }
 
 @media(max-width: 992px) {
@@ -920,21 +917,21 @@
 }
 
 .notes-list-pane {
-    padding: 16px;
+    padding: 14px;
 }
 
 .notes-cards-grid {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    max-height: 480px;
+    max-height: 440px;
     overflow-y: auto;
 }
 
 .note-folder-card {
-    padding: 10px 12px;
+    padding: 8px 10px;
     border-radius: var(--border-radius-sm);
-    background-color: var(--bg-primary);
+    background-color: var(--panel-bg);
     border: 1px solid var(--border-color);
     cursor: pointer;
 }
@@ -951,24 +948,24 @@
 .note-info-block {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 
-.note-folder-icon { font-size: 16px; }
-.note-folder-details h4 { font-size: 12.5px; font-weight: 600; }
-.note-folder-details p { font-size: 10.5px; color: var(--text-muted); }
+.note-folder-icon { font-size: 14px; color: var(--text-secondary); }
+.note-folder-details h4 { font-size: 12px; font-weight: 600; }
+.note-folder-details p { font-size: 10px; color: var(--text-muted); }
 
 /* Note Notepad Editor */
 .note-editor-pane {
-    padding: 20px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
-    min-height: 480px;
+    min-height: 440px;
 }
 
-.editor-header-inputs { margin-bottom: 12px; }
+.editor-header-inputs { margin-bottom: 10px; }
 .editor-title-input {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
     color: var(--text-primary);
     border: none;
@@ -978,44 +975,44 @@
 }
 .editor-title-input:focus { outline: none; border-bottom: 1.5px solid var(--color-primary); }
 
-.editor-meta-row { display: flex; gap: 12px; align-items: center; margin-top: 4px; }
+.editor-meta-row { display: flex; gap: 10px; align-items: center; margin-top: 4px; }
 .editor-meta-row select {
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
     color: var(--text-secondary);
-    padding: 4px 8px;
+    padding: 3px 6px;
     border-radius: 4px;
-    font-size: 11px;
+    font-size: 10.5px;
 }
 
 .editor-toolbar {
     display: flex;
     gap: 2px;
-    padding: 4px;
+    padding: 3px;
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-sm);
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
 .editor-tool-btn {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
     border-radius: 3px;
     color: var(--text-secondary);
-    font-size: 11px;
+    font-size: 10px;
 }
 .editor-tool-btn:hover { background-color: var(--bg-tertiary); color: var(--text-primary); }
 
 .editor-textarea {
     flex: 1;
-    min-height: 240px;
+    min-height: 220px;
     border: none;
     background: transparent;
     color: var(--text-primary);
     font-family: var(--font-primary);
-    font-size: 13.5px;
-    line-height: 1.5;
+    font-size: 13px;
+    line-height: 1.45;
     resize: none;
 }
 .editor-textarea:focus { outline: none; }
@@ -1024,36 +1021,36 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 12px;
+    margin-top: 10px;
     border-top: 1px solid var(--border-color);
-    padding-top: 12px;
+    padding-top: 10px;
 }
 
-.editor-status { font-size: 11px; color: var(--text-muted); }
+.editor-status { font-size: 10.5px; color: var(--text-muted); }
 
 /* Shared notes library */
-.notes-library-section { margin-top: 24px; }
+.notes-library-section { margin-top: 20px; }
 .library-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
 }
 
 .library-note-card {
-    padding: 16px;
+    padding: 14px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 160px;
+    height: 140px;
 }
 
 .lib-card-header { display: flex; justify-content: space-between; align-items: flex-start; }
-.lib-card-tag { font-size: 9.5px; font-weight: 600; padding: 2px 6px; border-radius: 3px; }
-.lib-card-downloads { font-size: 10.5px; color: var(--text-muted); display: flex; align-items: center; gap: 3px; }
-.lib-card-title { font-size: 13px; font-weight: 600; margin-top: 10px; }
-.lib-card-author { font-size: 11px; color: var(--text-secondary); }
-.lib-card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 10px; }
-.lib-card-rating { font-size: 10.5px; color: var(--tag-amber-text); display: flex; align-items: center; gap: 2px; }
+.lib-card-tag { font-size: 9px; font-weight: 600; padding: 1px 4px; border-radius: 3px; }
+.lib-card-downloads { font-size: 10px; color: var(--text-muted); display: flex; align-items: center; gap: 3px; }
+.lib-card-title { font-size: 12.5px; font-weight: 600; margin-top: 8px; }
+.lib-card-author { font-size: 10.5px; color: var(--text-secondary); }
+.lib-card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 8px; }
+.lib-card-rating { font-size: 10px; color: var(--tag-amber-text); display: flex; align-items: center; gap: 2px; }
 
 /* ==========================================================================
    6. Textbook & Gear Marketplace
@@ -1063,35 +1060,35 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 10px;
 }
 
 .marketplace-filters {
     display: flex;
-    gap: 8px;
+    gap: 6px;
 }
 
 .marketplace-filters select {
-    background-color: var(--bg-primary);
+    background-color: var(--panel-bg);
     border: 1px solid var(--border-color);
     color: var(--text-secondary);
-    padding: 6px 12px;
+    padding: 5px 10px;
     border-radius: var(--border-radius-sm);
-    font-size: 12px;
+    font-size: 11.5px;
 }
 
 .marketplace-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
 }
 
 .marketplace-card {
     display: flex;
     flex-direction: column;
-    background: var(--bg-primary);
+    background: var(--panel-bg);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-sm);
     overflow: hidden;
@@ -1099,7 +1096,7 @@
 
 .item-image-wrapper {
     position: relative;
-    height: 120px;
+    height: 110px;
     background: var(--bg-secondary);
     display: flex;
     align-items: center;
@@ -1107,54 +1104,54 @@
     border-bottom: 1px solid var(--border-color);
 }
 
-.item-thumb-placeholder { font-size: 36px; }
+.item-thumb-placeholder { font-size: 32px; }
 
 .item-price-tag {
     position: absolute;
-    top: 8px;
-    right: 8px;
-    background: var(--bg-primary);
+    top: 6px;
+    right: 6px;
+    background: var(--panel-bg);
     border: 1px solid var(--border-color);
     color: var(--text-primary);
     font-weight: 700;
-    font-size: 13px;
-    padding: 2px 6px;
+    font-size: 12px;
+    padding: 2px 5px;
     border-radius: 3px;
 }
 
 .item-details-panel {
-    padding: 12px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
     flex: 1;
 }
 
 .item-cat-label {
-    font-size: 9.5px;
+    font-size: 9px;
     font-weight: 600;
     color: var(--color-primary);
     text-transform: uppercase;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
 }
 
 .item-title-txt {
-    font-size: 12.5px;
+    font-size: 12px;
     font-weight: 600;
     line-height: 1.3;
-    margin-bottom: 6px;
-    height: 32px;
+    margin-bottom: 4px;
+    height: 30px;
     overflow: hidden;
 }
 
 .item-condition-badge {
-    font-size: 9px;
+    font-size: 8.5px;
     font-weight: 500;
-    padding: 1px 4px;
+    padding: 1px 3px;
     border-radius: 3px;
     background-color: var(--bg-tertiary);
     color: var(--text-secondary);
     align-self: flex-start;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .item-seller-row {
@@ -1162,13 +1159,13 @@
     justify-content: space-between;
     align-items: center;
     border-top: 1px solid var(--border-color);
-    padding-top: 8px;
+    padding-top: 6px;
     margin-top: auto;
 }
 
-.item-seller-info { display: flex; align-items: center; gap: 6px; }
-.item-seller-avatar { width: 18px; height: 18px; border-radius: 50%; }
-.item-seller-name { font-size: 10.5px; color: var(--text-secondary); }
+.item-seller-info { display: flex; align-items: center; gap: 5px; }
+.item-seller-avatar { width: 16px; height: 16px; border-radius: 50%; }
+.item-seller-name { font-size: 10px; color: var(--text-secondary); }
 
 /* ==========================================================================
    7. Campus Hub (Clubs & Events)
@@ -1176,13 +1173,13 @@
 
 .campus-tabs {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     border-bottom: 1px solid var(--border-color);
 }
 
 .campus-tab-btn {
-    padding: 8px 2px;
-    font-size: 13px;
+    padding: 6px 2px;
+    font-size: 12.5px;
     font-weight: 500;
     color: var(--text-secondary);
     border-bottom: 2px solid transparent;
@@ -1197,43 +1194,44 @@
 /* Clubs cards */
 .clubs-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
 }
 
 .club-card {
-    padding: 16px;
+    padding: 14px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 190px;
-    background: var(--bg-primary);
+    height: 170px;
+    background: var(--panel-bg);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-sm);
 }
 
-.club-card-header { display: flex; gap: 10px; align-items: center; }
+.club-card-header { display: flex; gap: 8px; align-items: center; }
 .club-logo {
-    width: 40px;
-    height: 40px;
-    border-radius: 6px;
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: 16px;
     background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
 }
 
-.club-header-meta h4 { font-size: 13.5px; font-weight: 600; }
-.club-header-meta p { font-size: 10.5px; color: var(--text-muted); }
+.club-header-meta h4 { font-size: 13px; font-weight: 600; }
+.club-header-meta p { font-size: 10px; color: var(--text-muted); }
 
 .club-desc {
-    font-size: 12px;
-    line-height: 1.4;
+    font-size: 11.5px;
+    line-height: 1.35;
     color: var(--text-secondary);
-    margin-top: 10px;
-    margin-bottom: 10px;
-    height: 48px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    height: 42px;
     overflow: hidden;
 }
 
@@ -1242,29 +1240,29 @@
     justify-content: space-between;
     align-items: center;
     border-top: 1px solid var(--border-color);
-    padding-top: 8px;
+    padding-top: 6px;
 }
 
 /* Events grid feed */
 .events-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
 }
 
 .event-card {
     display: flex;
     flex-direction: column;
-    background: var(--bg-primary);
+    background: var(--panel-bg);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-sm);
     overflow: hidden;
 }
 
 .event-banner-placeholder {
-    height: 80px;
+    height: 70px;
     background: var(--bg-secondary);
-    padding: 8px 12px;
+    padding: 6px 10px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -1274,47 +1272,47 @@
 
 .event-tag-badge {
     align-self: flex-start;
-    font-size: 8.5px;
+    font-size: 8px;
     font-weight: 600;
-    padding: 2px 6px;
+    padding: 1px 4px;
     border-radius: 3px;
 }
 
 .event-date-badge {
     position: absolute;
-    bottom: -16px;
-    right: 12px;
-    background: var(--bg-primary);
+    bottom: -12px;
+    right: 10px;
+    background: var(--panel-bg);
     border: 1px solid var(--border-color);
     color: var(--text-primary);
-    padding: 4px 8px;
+    padding: 3px 6px;
     border-radius: var(--border-radius-sm);
     display: flex;
     flex-direction: column;
     align-items: center;
     box-shadow: var(--panel-shadow);
 }
-.event-date-day { font-size: 14px; font-weight: 700; line-height: 1; }
-.event-date-month { font-size: 8px; font-weight: 600; }
+.event-date-day { font-size: 12px; font-weight: 700; line-height: 1; }
+.event-date-month { font-size: 7.5px; font-weight: 600; }
 
 .event-info-panel {
-    padding: 12px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
     flex: 1;
 }
 
-.event-host-club { font-size: 9px; font-weight: 600; color: var(--color-primary); margin-bottom: 4px; }
-.event-title-header { font-size: 13.5px; font-weight: 600; margin-bottom: 6px; }
-.event-details-desc { font-size: 11.5px; line-height: 1.4; color: var(--text-secondary); margin-bottom: 10px; height: 48px; overflow: hidden; }
-.event-location-row { display: flex; align-items: center; gap: 4px; font-size: 10.5px; color: var(--text-muted); margin-bottom: 10px; }
+.event-host-club { font-size: 8.5px; font-weight: 600; color: var(--color-primary); margin-bottom: 3px; }
+.event-title-header { font-size: 12.5px; font-weight: 600; margin-bottom: 4px; }
+.event-details-desc { font-size: 11px; line-height: 1.35; color: var(--text-secondary); margin-bottom: 8px; height: 42px; overflow: hidden; }
+.event-location-row { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--text-muted); margin-bottom: 8px; }
 
 .event-footer-action-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-top: 1px solid var(--border-color);
-    padding-top: 8px;
+    padding-top: 6px;
     margin-top: auto;
 }
-.event-rsvp-stats { font-size: 10.5px; color: var(--text-muted); }
+.event-rsvp-stats { font-size: 10px; color: var(--text-muted); }

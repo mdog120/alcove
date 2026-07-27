@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Alcove Campus Hub (Clubs & Events) Router Module (Notion Edition)
+   Alcove Campus Hub (Clubs & Events) Router Module (Beige-Mint Theme)
    ========================================================================== */
 
 import { store } from '../store.js';
@@ -11,7 +11,7 @@ export const eventsView = {
         return `
             <div class="planner-controls">
                 <div class="d-flex align-items-center gap-3">
-                    <h2 class="font-heading font-bold font-24">🎉 Campus Hub</h2>
+                    <h2 class="font-heading font-bold font-24"><i class="fa-regular fa-flag"></i> Campus Hub</h2>
                     
                     <div class="campus-tabs">
                         <button class="campus-tab-btn ${this.currentTab === 'events' ? 'active' : ''}" id="btn-camp-events">
@@ -25,7 +25,7 @@ export const eventsView = {
 
                 <div class="d-flex gap-2">
                     <button class="btn btn-primary" id="hub-create-btn">
-                        ➕ Create Event
+                        Create Event
                     </button>
                 </div>
             </div>
@@ -109,14 +109,14 @@ export const eventsView = {
                             <p class="event-details-desc">${ev.desc}</p>
                             
                             <div class="event-location-row">
-                                <span>📅 ${timeString}</span>
+                                <span><i class="fa-regular fa-clock"></i> ${timeString}</span>
                                 <span style="margin: 0 4px;">&bull;</span>
-                                <span title="${ev.location}">📍 ${ev.location}</span>
+                                <span title="${ev.location}"><i class="fa-regular fa-compass"></i> ${ev.location}</span>
                             </div>
 
                             <div class="event-footer-action-row">
                                 <span class="event-rsvp-stats">
-                                    👥 ${attendeesCount} Going
+                                    <i class="fa-regular fa-user"></i> ${attendeesCount} Going
                                 </span>
                                 <button class="btn btn-sm event-rsvp-action-btn ${ev.rsvped ? 'btn-secondary' : 'btn-primary'}" data-event-id="${ev.id}" style="padding: 4px 8px; font-size:11px;">
                                     ${ev.rsvped ? 'Going' : 'RSVP'}
@@ -174,15 +174,17 @@ export const eventsView = {
 
         clubsHTML += clubs.map(club => {
             let tagTheme = "purple";
-            if (club.icon === "⛺") tagTheme = "emerald";
-            if (club.icon === "♟️") tagTheme = "amber";
-            if (club.icon === "🧬") tagTheme = "red";
+            let iconHtml = `<i class="fa-solid fa-code"></i>`;
+            
+            if (club.icon === "⛺") { tagTheme = "emerald"; iconHtml = `<i class="fa-solid fa-mountain"></i>`; }
+            else if (club.icon === "♟️") { tagTheme = "amber"; iconHtml = `<i class="fa-solid fa-chess"></i>`; }
+            else if (club.icon === "🧬") { tagTheme = "red"; iconHtml = `<i class="fa-solid fa-dna"></i>`; }
 
             return `
                 <div class="club-card glass-panel">
                     <div class="club-card-header">
-                        <div class="club-logo" style="background-color: var(--tag-${tagTheme}-bg); color: var(--tag-${tagTheme}-text); font-size: 16px;">
-                            ${club.icon}
+                        <div class="club-logo" style="background-color: var(--tag-${tagTheme}-bg); color: var(--tag-${tagTheme}-text);">
+                            ${iconHtml}
                         </div>
                         <div class="club-header-meta">
                             <h4>${club.name}</h4>

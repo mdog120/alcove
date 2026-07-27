@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alcove | Your Student Workspace</title>
+    <!-- Favicon pointing to the Sage Arch Logo -->
+    <link rel="icon" type="image/jpeg" href="logo.jpg">
     <!-- Google Fonts: Inter for clean typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome for fallback actions -->
+    <!-- FontAwesome for monochrome regular/outline icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/styles.css">
@@ -21,45 +23,45 @@
         <!-- Sidebar Navigation (Notion Style) -->
         <aside class="sidebar">
             <div class="sidebar-brand">
-                <div class="brand-logo">🏛️</div>
+                <img src="logo.jpg" alt="Alcove Logo" class="brand-logo-img">
                 <span class="brand-name">Alcove</span>
             </div>
             
             <nav class="sidebar-nav">
                 <a href="#dashboard" class="nav-item active" data-view="dashboard">
-                    <span class="nav-icon">🏠</span>
+                    <span class="nav-icon"><i class="fa-regular fa-compass"></i></span>
                     <span>Dashboard</span>
                 </a>
                 <a href="#planner" class="nav-item" data-view="planner">
-                    <span class="nav-icon">📅</span>
+                    <span class="nav-icon"><i class="fa-regular fa-calendar-check"></i></span>
                     <span>Planner & Calendar</span>
                 </a>
                 <a href="#gpa" class="nav-item" data-view="gpa">
-                    <span class="nav-icon">🧮</span>
+                    <span class="nav-icon"><i class="fa-regular fa-chart-bar"></i></span>
                     <span>GPA Calculator</span>
                 </a>
                 <a href="#chat" class="nav-item" data-view="chat">
-                    <span class="nav-icon">💬</span>
+                    <span class="nav-icon"><i class="fa-regular fa-comments"></i></span>
                     <span>Class Chats</span>
                 </a>
                 <a href="#notes" class="nav-item" data-view="notes">
-                    <span class="nav-icon">📝</span>
+                    <span class="nav-icon"><i class="fa-regular fa-file-lines"></i></span>
                     <span>Notes Share</span>
                 </a>
                 <a href="#marketplace" class="nav-item" data-view="marketplace">
-                    <span class="nav-icon">🛍️</span>
+                    <span class="nav-icon"><i class="fa-regular fa-handshake"></i></span>
                     <span>Marketplace</span>
                 </a>
                 <a href="#events" class="nav-item" data-view="events">
-                    <span class="nav-icon">🎉</span>
+                    <span class="nav-icon"><i class="fa-regular fa-flag"></i></span>
                     <span>Campus Hub</span>
                 </a>
             </nav>
 
             <div class="sidebar-footer">
                 <button id="theme-toggle" class="theme-btn" aria-label="Toggle dark mode">
-                    <span class="theme-icon dark-icon">🌙</span>
-                    <span class="theme-icon light-icon">☀️</span>
+                    <span class="theme-icon dark-icon"><i class="fa-regular fa-moon"></i></span>
+                    <span class="theme-icon light-icon"><i class="fa-regular fa-sun"></i></span>
                     <span>Theme Mode</span>
                 </button>
                 
@@ -79,7 +81,7 @@
             <header class="top-header">
                 <div class="header-left">
                     <div class="school-selector">
-                        <span>🌲</span>
+                        <span class="school-selector-icon"><i class="fa-regular fa-building"></i></span>
                         <span class="current-school">Stanford University</span>
                     </div>
                     <div class="header-search">
@@ -91,7 +93,7 @@
                 <div class="header-right">
                     <!-- Notification Tray -->
                     <div class="header-action notification-bell" id="notification-trigger">
-                        <span>🔔</span>
+                        <span><i class="fa-regular fa-bell"></i></span>
                         <span class="notification-badge" id="notif-badge">3</span>
                         <!-- Dropdown -->
                         <div class="notification-dropdown" id="notif-dropdown">
@@ -107,7 +109,7 @@
 
                     <!-- Today's date widget -->
                     <div class="header-date">
-                        <span>📅</span>
+                        <span><i class="fa-regular fa-clock"></i></span>
                         <span id="live-date">July 27, 2026</span>
                     </div>
                 </div>
@@ -125,7 +127,7 @@
     <div id="task-modal" class="modal-overlay">
         <div class="modal-content glass-panel">
             <div class="modal-header">
-                <h3 id="task-modal-title">📝 Add Assignment / Exam</h3>
+                <h3 id="task-modal-title"><i class="fa-regular fa-edit"></i> Add Assignment / Exam</h3>
                 <button class="close-modal-btn" data-close="task-modal">&times;</button>
             </div>
             <form id="task-form">
@@ -181,7 +183,7 @@
     <div id="marketplace-modal" class="modal-overlay">
         <div class="modal-content glass-panel">
             <div class="modal-header">
-                <h3>🏷️ List Book or Gear for Sale</h3>
+                <h3><i class="fa-regular fa-handshake"></i> List Book or Gear for Sale</h3>
                 <button class="close-modal-btn" data-close="marketplace-modal">&times;</button>
             </div>
             <form id="marketplace-form">
@@ -247,7 +249,7 @@
     <div id="event-modal" class="modal-overlay">
         <div class="modal-content glass-panel">
             <div class="modal-header">
-                <h3>📢 Post Campus Event / Club Meetup</h3>
+                <h3><i class="fa-regular fa-flag"></i> Post Campus Event / Club Meetup</h3>
                 <button class="close-modal-btn" data-close="event-modal">&times;</button>
             </div>
             <form id="event-form">

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Alcove Notes Manager & Shared Campus Library Router Module (Notion Edition)
+   Alcove Notes Manager & Shared Campus Library Router Module (Beige-Mint)
    ========================================================================== */
 
 import { store } from '../store.js';
@@ -11,9 +11,9 @@ export const notesView = {
     template() {
         return `
             <div class="planner-controls">
-                <h2 class="font-heading font-bold font-24">📝 Study Notes Hub</h2>
+                <h2 class="font-heading font-bold font-24"><i class="fa-regular fa-file-lines"></i> Study Notes Hub</h2>
                 <button class="btn btn-primary" id="notes-new-btn">
-                    ➕ New Note
+                    New Note
                 </button>
             </div>
 
@@ -51,8 +51,8 @@ export const notesView = {
                         <button class="editor-tool-btn" data-cmd="list" title="Bullet List">List</button>
                         <button class="editor-tool-btn" data-cmd="code" title="Code Block">&lt;/&gt;</button>
                         <div style="width: 1px; background-color: var(--border-color); margin: 0 4px;"></div>
-                        <button class="editor-tool-btn" data-cmd="share" title="Share to Campus Library" id="editor-btn-share">
-                            📤 Share
+                        <button class="editor-tool-btn" data-cmd="share" title="Share to Campus Library" id="editor-btn-share" style="width: auto; padding: 0 6px;">
+                            <i class="fa-regular fa-share-from-square"></i> Share
                         </button>
                     </div>
 
@@ -73,7 +73,7 @@ export const notesView = {
             <!-- Bottom Section: Campus Shared Library -->
             <section class="notes-library-section">
                 <div class="dashboard-section-title">
-                    <span>📖 Campus Shared Library</span>
+                    <span><i class="fa-regular fa-folder-open"></i> Campus Library</span>
                 </div>
 
                 <div class="marketplace-filter-row glass-panel p-3 mb-4">
@@ -143,7 +143,7 @@ export const notesView = {
             return `
                 <div class="note-folder-card glass-panel ${this.activeNoteId === n.id ? 'active' : ''}" data-note-id="${n.id}">
                     <div class="note-info-block">
-                        <span class="note-folder-icon">📝</span>
+                        <span class="note-folder-icon"><i class="fa-regular fa-file-lines"></i></span>
                         <div class="note-folder-details">
                             <h4>${n.title || 'Untitled Note'}</h4>
                             <p>${courseCode} &bull; ${n.date}</p>
@@ -230,7 +230,7 @@ export const notesView = {
                             ${n.course}
                         </span>
                         <div class="lib-card-downloads">
-                            <span>📥 ${n.downloads}</span>
+                            <span><i class="fa-regular fa-circle-down"></i> ${n.downloads}</span>
                         </div>
                     </div>
                     
@@ -241,7 +241,7 @@ export const notesView = {
 
                     <div class="lib-card-footer">
                         <div class="lib-card-rating">
-                            <span>⭐ ${n.rating}</span>
+                            <span><i class="fa-regular fa-star"></i> ${n.rating}</span>
                         </div>
                         <button class="btn btn-secondary btn-sm lib-download-btn" data-lib-id="${n.id}" style="padding: 4px 8px; font-size:11px;">
                             Download

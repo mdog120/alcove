@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Alcove GPA Calculator Router Module (Notion Aesthetics Edition)
+   Alcove GPA Calculator Router Module (Beige-Mint Theme)
    ========================================================================== */
 
 import { store } from '../store.js';
@@ -14,13 +14,13 @@ export const gpaView = {
     template() {
         return `
             <div class="planner-controls">
-                <h2 class="font-heading font-bold font-24">🧮 GPA Workspace</h2>
+                <h2 class="font-heading font-bold font-24"><i class="fa-regular fa-chart-bar"></i> GPA Workspace</h2>
                 <div class="d-flex gap-2">
                     <button class="btn btn-secondary" id="gpa-add-semester-btn">
-                        ➕ New Semester
+                        New Semester
                     </button>
                     <button class="btn btn-primary" id="gpa-save-btn">
-                        💾 Save Changes
+                        Save Changes
                     </button>
                 </div>
             </div>
@@ -59,7 +59,7 @@ export const gpaView = {
 
                     <!-- Target GPA Estimator Widget -->
                     <div class="mt-4 p-3 glass-panel w-100 text-left font-12" style="background-color: var(--bg-secondary);">
-                        <h4 class="font-semibold mb-2" style="color: var(--color-primary);"><i class="fa-solid fa-bullseye"></i> Goal Calculator</h4>
+                        <h4 class="font-semibold mb-2" style="color: var(--color-primary);"><i class="fa-regular fa-compass"></i> Goal Calculator</h4>
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <span>Target GPA:</span>
                             <input type="number" id="gpa-target-input" value="3.90" step="0.05" min="0" max="4.0" style="width: 54px; padding: 4px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); text-align: center;">
@@ -80,7 +80,7 @@ export const gpaView = {
 
                     <div class="gpa-actions">
                         <button class="btn btn-secondary btn-sm" id="gpa-add-course-btn" style="padding:5px 10px;">
-                            ➕ Add Course Row
+                            Add Course Row
                         </button>
                         <span class="text-muted font-11" id="gpa-semester-summary">
                             Semester GPA: 0.00 | Credits: 0
@@ -134,7 +134,7 @@ export const gpaView = {
         const container = document.getElementById('gpa-semesters-tabs');
         container.innerHTML = Object.keys(this.semesters).map(sem => `
             <button class="gpa-tab-btn ${this.activeSemester === sem ? 'active' : ''}" data-sem="${sem}">
-                📁 ${sem}
+                <i class="fa-regular fa-folder"></i> ${sem}
             </button>
         `).join('');
 
