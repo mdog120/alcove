@@ -14,10 +14,11 @@ export const loginView = {
                     <span>Alcove</span>
                 </div>
                 <div class="landing-actions">
-                    <button class="landing-actions-btn-link" id="nav-login-btn">Log In</button>
-                    <button class="btn btn-primary btn-sm" id="nav-signup-btn" style="padding: 4px 10px; font-size: 12px;">
+                    <button type="button" class="landing-actions-btn-link" id="nav-login-btn">Log In</button>
+                    <!-- Converted to direct native href anchor link -->
+                    <a href="#signup" class="btn btn-primary btn-sm" id="nav-signup-btn" style="padding: 4px 10px; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none;">
                         Get Alcove Free
-                    </button>
+                    </a>
                 </div>
             </header>
 
@@ -27,9 +28,10 @@ export const loginView = {
                 <p>
                     Alcove brings classes, assignments, GPA tracking, study sheets, and classmate group chats together into one beautiful place.
                 </p>
-                <button class="btn btn-primary" id="hero-cta-btn" style="padding: 8px 16px; font-size:13.5px; font-weight:600;">
+                <!-- Converted to direct native href anchor link -->
+                <a href="#signup" class="btn btn-primary" id="hero-cta-btn" style="padding: 8px 16px; font-size:13.5px; font-weight:600; display: inline-inline-block; text-decoration: none;">
                     Get Alcove Free &rarr;
-                </button>
+                </a>
             </section>
 
             <!-- Alternating Features Grid (Notion style with animated CSS demos) -->
@@ -110,7 +112,7 @@ export const loginView = {
                 <div class="modal-content glass-panel" style="position: relative; max-width: 350px; width: 100%; padding: 28px; background-color: var(--panel-bg); border-radius: var(--border-radius-md); border: 1px solid var(--border-color); box-shadow: 0 12px 36px rgba(0,0,0,0.15);">
                     
                     <!-- Close Modal Trigger -->
-                    <button class="close-modal-btn" id="auth-close-btn" style="position: absolute; top: 12px; right: 14px; font-size: 18px; border:none; background:none; cursor:pointer; color:var(--text-muted);">&times;</button>
+                    <button type="button" class="close-modal-btn" id="auth-close-btn" style="position: absolute; top: 12px; right: 14px; font-size: 18px; border:none; background:none; cursor:pointer; color:var(--text-muted);">&times;</button>
                     
                     <!-- Branded logo header -->
                     <div style="text-align: center; margin-bottom: 22px;">
@@ -166,22 +168,18 @@ export const loginView = {
         };
 
         // Header Navigation Hooks
-        document.getElementById('nav-login-btn').addEventListener('click', openModal);
-        
-        // Redirect to Onboarding Wizard for Sign Up actions
-        document.getElementById('nav-signup-btn').addEventListener('click', () => {
-            window.location.hash = '#signup';
-        });
-        
-        document.getElementById('hero-cta-btn').addEventListener('click', () => {
-            window.location.hash = '#signup';
-        });
+        const loginBtn = document.getElementById('nav-login-btn');
+        if (loginBtn) loginBtn.addEventListener('click', openModal);
 
         // Close Trigger Button hooks
-        document.getElementById('auth-close-btn').addEventListener('click', closeModal);
-        overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) closeModal();
-        });
+        const closeBtn = document.getElementById('auth-close-btn');
+        if (closeBtn) closeBtn.addEventListener('click', closeModal);
+        
+        if (overlay) {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) closeModal();
+            });
+        }
 
         // Auth Form submit trigger
         const form = document.getElementById('modal-auth-form');
