@@ -124,6 +124,10 @@ class AppController {
             profileCard.style.cursor = 'pointer';
             profileCard.addEventListener('click', () => {
                 if (confirm("Would you like to sign out of Alcove?")) {
+                    if (this.user?.isDemo) {
+                        this.endDemoSession();
+                        return;
+                    }
                     signOutUser().then(() => {
                         this.showToast("Logged out successfully", "info");
                     });
@@ -170,6 +174,16 @@ class AppController {
 
     // Initializes Supabase session checking and Auth hooks
     initSupabaseListener() {
+        const savedDemo = localStorage.getItem('alcove_demo_user');
+        if (savedDemo) {
+            try {
+                this.activateUser({ ...JSON.parse(savedDemo), isDemo: true });
+                return;
+            } catch {
+                localStorage.removeItem('alcove_demo_user');
+            }
+        }
+
         const sb = getSupabase();
         if (!sb) {
             // Fallback for standalone mock operations if client config fails
@@ -186,36 +200,58 @@ class AppController {
             if (session) {
                 // User is authenticated
                 const profile = await getUserProfile(session.user);
-                this.user = profile;
-
-                // Sync sidebar profile card DOM elements
-                document.getElementById('sidebar-user-name').textContent = profile.name;
-                document.getElementById('sidebar-user-school').textContent = profile.school;
-                document.getElementById('sidebar-avatar').src = profile.avatar;
-                
-                // Sync header school tag
-                document.getElementById('header-school-name').innerHTML = `
-                    <span class="school-selector-icon"><i class="fa-regular fa-building"></i></span>
-                    ${profile.school}
-                `;
-
-                // Display application canvas
-                const appContainer = document.getElementById('main-app-container');
-                appContainer.classList.remove('landing-active');
-                appContainer.style.display = 'grid';
-
-                // Route away from login/signup if needed
-                if (!window.location.hash || window.location.hash === '#login' || window.location.hash === '#signup') {
-                    window.location.hash = '#dashboard';
-                } else {
-                    this.handleRoute();
-                }
+                this.activateUser(profile);
             } else {
                 // User is unauthenticated / logged out
                 this.user = null;
                 this.handleRoute();
             }
         });
+    }
+
+    activateUser(profile) {
+        this.user = profile;
+        Object.assign(store.user, profile);
+
+        document.getElementById('sidebar-user-name').textContent = profile.name;
+        document.getElementById('sidebar-user-school').textContent = profile.school;
+        document.getElementById('sidebar-avatar').src = profile.avatar;
+        document.getElementById('header-school-name').innerHTML = `
+            <span class="school-selector-icon"><i class="fa-regular fa-building"></i></span>
+            ${profile.school}
+        `;
+
+        const appContainer = document.getElementById('main-app-container');
+        appContainer.classList.remove('landing-active');
+        appContainer.style.display = 'grid';
+
+        if (!window.location.hash || window.location.hash === '#login' || window.location.hash === '#signup') {
+            window.location.hash = '#dashboard';
+        } else {
+            this.handleRoute();
+        }
+    }
+
+    startDemoSession() {
+        const profile = {
+            id: 'local-demo',
+            name: 'Alex Rivera',
+            school: 'Stanford University',
+            year: "Stanford '27",
+            avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
+            isDemo: true
+        };
+        localStorage.setItem('alcove_demo_user', JSON.stringify(profile));
+        this.activateUser(profile);
+        this.showToast('Demo workspace ready — changes are saved on this device.', 'success');
+    }
+
+    endDemoSession() {
+        localStorage.removeItem('alcove_demo_user');
+        this.user = null;
+        this.initSupabaseListener();
+        window.location.hash = '#login';
+        this.showToast('Signed out of the demo workspace.', 'info');
     }
 
     // Hash routing controller

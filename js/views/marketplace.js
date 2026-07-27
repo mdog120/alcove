@@ -190,6 +190,32 @@ export const marketplaceView = {
             this.conditionFilter = e.target.value;
             this.renderMarketGrid();
         });
+
+        // The listing modal is shared with the dashboard, so bind it here too
+        // when Marketplace is opened directly.
+        document.getElementById('marketplace-form').onsubmit = (e) => {
+            e.preventDefault();
+            const title = document.getElementById('item-title').value.trim();
+            const price = Number(document.getElementById('item-price').value);
+            if (!title || !Number.isFinite(price) || price < 0) return;
+
+            const listings = store.getMarketplace();
+            listings.push({
+                id: `mk-${Date.now()}`,
+                title,
+                price,
+                condition: document.getElementById('item-condition').value,
+                course: document.getElementById('item-course').value.trim(),
+                category: document.getElementById('item-category').value,
+                imgType: document.getElementById('item-image-select').value,
+                seller: store.user.name,
+                sellerAvatar: store.user.avatar,
+                desc: document.getElementById('item-desc').value.trim()
+            });
+            store.saveMarketplace(listings);
+            window.app.closeModal('marketplace-modal');
+            window.app.showToast('Item listed in marketplace!', 'success');
+        };
     }
 };
 export default marketplaceView;

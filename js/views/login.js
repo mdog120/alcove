@@ -15,6 +15,7 @@ export const loginView = {
                 </div>
                 <div class="landing-actions">
                     <button type="button" class="landing-actions-btn-link" id="nav-login-btn">Log In</button>
+                    <button type="button" class="landing-actions-btn-link" id="demo-login-btn">Try demo</button>
                     <!-- Converted to direct native href anchor link -->
                     <a href="#signup" class="btn btn-primary btn-sm" id="nav-signup-btn" style="padding: 4px 10px; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none;">
                         Get Alcove Free
@@ -32,6 +33,7 @@ export const loginView = {
                 <a href="#signup" class="btn btn-primary" id="hero-cta-btn" style="padding: 8px 16px; font-size:13.5px; font-weight:600; display: inline-block; text-decoration: none;">
                     Get Alcove Free &rarr;
                 </a>
+                <button type="button" class="landing-actions-btn-link" id="hero-demo-btn" style="margin-left: 10px;">Explore the demo</button>
             </section>
 
             <!-- Alternating Features Grid (Notion style with animated CSS demos) -->
@@ -170,6 +172,10 @@ export const loginView = {
         // Header Navigation Hooks
         const loginBtn = document.getElementById('nav-login-btn');
         if (loginBtn) loginBtn.addEventListener('click', openModal);
+
+        [document.getElementById('demo-login-btn'), document.getElementById('hero-demo-btn')]
+            .filter(Boolean)
+            .forEach(btn => btn.addEventListener('click', () => window.app.startDemoSession()));
 
         // Close Trigger Button hooks
         const closeBtn = document.getElementById('auth-close-btn');
