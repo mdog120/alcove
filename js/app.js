@@ -137,6 +137,7 @@ class AppController {
         if (introPlayed && overlay) {
             // Already played in this session - skip animation entirely
             overlay.remove();
+            this.handleRoute();
             this.initSupabaseListener();
         } else {
             // Play custom 3D opening animations
@@ -155,6 +156,7 @@ class AppController {
             setTimeout(() => {
                 if (overlay) overlay.remove();
                 sessionStorage.setItem('alcove_intro_played', 'true');
+                this.handleRoute();
                 this.initSupabaseListener();
             }, 4400);
         }
@@ -205,15 +207,6 @@ class AppController {
             } else {
                 // User is unauthenticated / logged out
                 this.user = null;
-                
-                // Route to correct guest route
-                const hash = window.location.hash.substring(1);
-                if (hash === 'signup') {
-                    window.location.hash = '#signup';
-                } else {
-                    window.location.hash = '#login';
-                }
-                
                 this.handleRoute();
             }
         });
