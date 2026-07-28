@@ -57,12 +57,22 @@ language plpgsql
 security definer set search_path = public
 as $$
 begin
-    insert into public.profiles (id, full_name, school_name, avatar_url)
+    insert into public.profiles (
+        id, full_name, school_name, avatar_url, age, state, city,
+        education_level, school_district, major, grad_year
+    )
     values (
         new.id,
         coalesce(new.raw_user_meta_data ->> 'full_name', ''),
         coalesce(new.raw_user_meta_data ->> 'school_name', ''),
-        coalesce(new.raw_user_meta_data ->> 'avatar_url', '')
+        coalesce(new.raw_user_meta_data ->> 'avatar_url', ''),
+        nullif(new.raw_user_meta_data ->> 'age', '')::integer,
+        coalesce(new.raw_user_meta_data ->> 'state', ''),
+        coalesce(new.raw_user_meta_data ->> 'city', ''),
+        coalesce(new.raw_user_meta_data ->> 'education_level', 'college'),
+        coalesce(new.raw_user_meta_data ->> 'school_district', ''),
+        coalesce(new.raw_user_meta_data ->> 'major', ''),
+        coalesce(new.raw_user_meta_data ->> 'grad_year', '')
     )
     on conflict (id) do nothing;
     return new;

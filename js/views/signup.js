@@ -556,7 +556,7 @@ export const signupView = {
             submitBtn.textContent = "Setting up workspace...";
 
             try {
-                await signUpUser(email, password, fullName, schoolName, {
+                const signup = await signUpUser(email, password, fullName, schoolName, {
                     age,
                     state,
                     city,
@@ -566,11 +566,20 @@ export const signupView = {
                     gradYear
                 });
 
-                window.app.showToast("Account onboarding completed! Logging you in...", "success");
-                
-                setTimeout(() => {
+                if (signup.user?.identities?.length === 0) {
+                    window.app.showToast("An account with this email already exists. Please log in instead.", "warning");
                     window.location.hash = '#login';
-                }, 1000);
+                    return;
+                }
+
+                if (!signup.session) {
+                    window.app.showToast("Account created. Check your email to confirm your address, then log in.", "success");
+                    window.location.hash = '#login';
+                    return;
+                }
+
+                // The auth listener routes an active session to the dashboard.
+                window.app.showToast("Your Alcove workspace is ready.", "success");
             } catch (err) {
                 console.error("Signup error:", err);
                 window.app.showToast(err.message || "Signup failed.", "danger");

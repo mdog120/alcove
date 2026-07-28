@@ -39,6 +39,7 @@ export async function signUpUser(email, password, fullName, schoolName, details 
         email,
         password,
         options: {
+            emailRedirectTo: window.location.origin,
             data: {
                 full_name: fullName,
                 school_name: schoolName,
@@ -57,7 +58,9 @@ export async function signUpUser(email, password, fullName, schoolName, details 
     if (error) throw error;
 
     // 2. Try writing to public.profiles table
-    if (data.user) {
+    // With email confirmation enabled Supabase does not create a session yet,
+    // so the profile trigger in schema.sql owns the initial record until login.
+    if (data.user && data.session) {
         try {
             const { error: profileError } = await sb
                 .from('profiles')
