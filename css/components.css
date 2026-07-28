@@ -1599,11 +1599,11 @@
     text-align: left;
     border: 1px solid var(--border-color);
     border-radius: 24px;
-    background: radial-gradient(circle at 92% 8%, rgba(129, 140, 248, 0.19), transparent 26%), linear-gradient(135deg, #ffffff 0%, #f4f4ff 100%);
+    background: radial-gradient(circle at 92% 8%, rgba(127, 154, 138, 0.2), transparent 26%), linear-gradient(135deg, #ffffff 0%, #f3f6f2 100%);
     box-shadow: 0 16px 45px rgba(45, 55, 120, 0.08);
 }
 
-:root[data-theme="dark"] .landing-hero { background: radial-gradient(circle at 92% 8%, rgba(129, 140, 248, 0.22), transparent 26%), #1c1f32; }
+:root[data-theme="dark"] .landing-hero { background: radial-gradient(circle at 92% 8%, rgba(127, 154, 138, 0.22), transparent 26%), var(--panel-bg); }
 .landing-eyebrow, .feature-kicker { display: block; color: var(--color-primary); font-size: 10px; font-weight: 800; letter-spacing: 0.12em; }
 .landing-hero h1 { max-width: 640px; margin: 14px 0 18px; font-size: clamp(38px, 5vw, 64px); line-height: 1.03; letter-spacing: -0.055em; }
 .landing-hero p { max-width: 540px; margin: 0 0 28px; font-size: 17px; line-height: 1.65; color: var(--text-secondary); }

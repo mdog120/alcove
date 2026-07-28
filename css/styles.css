@@ -803,45 +803,9 @@ button {
 /* ==========================================================================
    Alcove product polish — calm, precise, and built for daily use
    ========================================================================== */
-:root[data-theme="light"] {
-    --bg-primary: #f8f9fc;
-    --bg-secondary: #f1f3f9;
-    --bg-tertiary: #e8ebf5;
-    --bg-sidebar: #ffffff;
-    --text-primary: #171b2c;
-    --text-secondary: #667085;
-    --text-muted: #98a2b3;
-    --border-color: #e4e7ec;
-    --border-hover: #cdd3e1;
-    --panel-bg: #ffffff;
-    --panel-shadow: 0 1px 2px rgba(16, 24, 40, 0.03), 0 3px 10px rgba(16, 24, 40, 0.03);
-    --input-bg: #ffffff;
-    --input-border: #d0d5dd;
-    --input-focus: rgba(79, 70, 229, 0.15);
-    --card-hover-bg: #f5f6ff;
-}
-
-:root[data-theme="dark"] {
-    --bg-primary: #151725;
-    --bg-secondary: #1d2031;
-    --bg-tertiary: #282c41;
-    --bg-sidebar: #191b2a;
-    --text-primary: #f5f7fb;
-    --text-secondary: #b4b9c9;
-    --text-muted: #7d8498;
-    --border-color: #30344a;
-    --border-hover: #454b65;
-    --panel-bg: #202336;
-    --panel-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
-    --input-bg: #1a1d2d;
-    --input-border: #353a51;
-    --input-focus: rgba(129, 140, 248, 0.2);
-    --card-hover-bg: #272b42;
-}
-
 :root {
-    --color-primary: #4f46e5;
-    --color-primary-hover: #4338ca;
+    --color-primary: #7f9a8a;
+    --color-primary-hover: #6a8274;
     --border-radius-sm: 8px;
     --border-radius-md: 14px;
     --border-radius-lg: 20px;
@@ -854,16 +818,14 @@ button {
 .brand-logo-img { width: 30px; height: 30px; border-radius: 9px; border: 0; }
 .brand-name { font-size: 16px; letter-spacing: -0.5px; }
 .nav-item { padding: 9px 12px; border-radius: 8px; font-size: 13px; }
-.nav-item.active { background: #eeefff; color: #3730a3; }
-:root[data-theme="dark"] .nav-item.active { background: #2b2d57; color: #c7d2fe; }
-.top-header { height: 64px; padding: 0 32px; background: rgba(255,255,255,0.86); backdrop-filter: blur(12px); }
-:root[data-theme="dark"] .top-header { background: rgba(25,27,42,0.88); }
+.nav-item.active { background: var(--bg-tertiary); color: var(--text-primary); }
+.top-header { height: 64px; padding: 0 32px; background: color-mix(in srgb, var(--bg-primary) 90%, transparent); backdrop-filter: blur(12px); }
 .header-search { max-width: 340px; }
 .header-search input { padding: 8px 12px 8px 30px; border-radius: 9px; font-size: 12px; background: var(--panel-bg); }
 .viewport-content { padding: 32px 40px 48px; }
 .glass-panel { border-radius: 14px; box-shadow: var(--panel-shadow); }
 .btn { min-height: 34px; border-radius: 8px; font-weight: 600; }
-.btn-primary { box-shadow: 0 2px 5px rgba(79,70,229,0.22); }
+.btn-primary { box-shadow: 0 2px 5px rgba(76, 100, 86, 0.2); }
 .btn-primary:hover { transform: translateY(-1px); }
 
 @media (max-width: 768px) {
