@@ -12,7 +12,7 @@ export const dashboardView = {
                 <div class="hero-welcome">
                     <img src="logo.jpg" alt="Alcove" class="hero-welcome-logo">
                     <div>
-                        <h1 id="welcome-greeting">Hello, Alex!</h1>
+                        <h1 id="welcome-greeting">Welcome back.</h1>
                         <p>Welcome back to your workspace. Here is an overview of your academic life today.</p>
                     </div>
                 </div>
@@ -96,10 +96,11 @@ export const dashboardView = {
     updateWelcomeGreeting() {
         const greetingEl = document.getElementById('welcome-greeting');
         const hour = new Date().getHours();
-        let greeting = "Hello, Alex!";
-        if (hour < 12) greeting = "Good morning, Alex!";
-        else if (hour < 18) greeting = "Good afternoon, Alex!";
-        else greeting = "Good evening, Alex!";
+        const firstName = (store.user.name || 'there').split(' ')[0];
+        let greeting = `Hello, ${firstName}.`;
+        if (hour < 12) greeting = `Good morning, ${firstName}.`;
+        else if (hour < 18) greeting = `Good afternoon, ${firstName}.`;
+        else greeting = `Good evening, ${firstName}.`;
         greetingEl.textContent = greeting;
     },
 

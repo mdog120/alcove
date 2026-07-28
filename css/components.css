@@ -1634,9 +1634,10 @@
 .auth-card-heading h2 { margin: 9px 0 7px; font-size: 27px; letter-spacing: -0.04em; }
 .auth-card-heading p { color: var(--text-secondary); font-size: 13px; }
 .auth-form { display: flex; flex-direction: column; gap: 16px; margin-top: 28px; }
+.auth-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .auth-form .form-group { gap: 6px; }
-.auth-form input { width: 100%; padding: 10px 12px; border: 1px solid var(--input-border); border-radius: 8px; background: var(--input-bg); color: var(--text-primary); font: inherit; font-size: 13px; }
-.auth-form input:focus { outline: 0; border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--input-focus); }
+.auth-form input, .auth-form select { width: 100%; padding: 10px 12px; border: 1px solid var(--input-border); border-radius: 8px; background: var(--input-bg); color: var(--text-primary); font: inherit; font-size: 13px; }
+.auth-form input:focus, .auth-form select:focus { outline: 0; border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--input-focus); }
 .auth-submit { margin-top: 6px; min-height: 42px; }
 .auth-footnote { margin-top: 18px; color: var(--text-muted); font-size: 11px; line-height: 1.5; text-align: center; }
 
@@ -1646,4 +1647,5 @@
     .auth-intro h1 { font-size: 39px; }
     .auth-quote { display: none; }
     .auth-card { padding: 25px; }
+    .auth-form-grid { grid-template-columns: 1fr; gap: 16px; }
 }

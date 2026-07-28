@@ -79,8 +79,8 @@
 
 /* Constants */
 :root {
-    --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    --font-primary: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    --font-heading: 'DM Serif Display', Georgia, serif;
     
     /* Brand Accent: Mint Green from logo */
     --color-primary: #7f9a8a; 

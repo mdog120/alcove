@@ -9,6 +9,18 @@ const WORKSPACE_KEYS = [
     'marketplace', 'clubs', 'events'
 ];
 
+const EMPTY_WORKSPACE = {
+    courses: [],
+    tasks: [],
+    chats: {},
+    partners: [],
+    notes: [],
+    library_notes: [],
+    marketplace: [],
+    clubs: [],
+    events: []
+};
+
 const MOCK_COURSES = [
     { id: "cs-106b", code: "CS 106B", name: "Programming Abstractions", credits: 5, time: "Tue/Thu 1:30 PM", room: "Gates Building 104", grade: "A", type: "regular", color: "indigo" },
     { id: "math-51", code: "MATH 51", name: "Linear Algebra & Calculus", credits: 5, time: "Mon/Wed/Fri 10:30 AM", room: "Math Corner Room 20", grade: "B+", type: "regular", color: "amber" },
@@ -113,6 +125,7 @@ export const store = {
 
     async connectCloudWorkspace(userId) {
         this.cloudUserId = userId;
+        this.user.notifications = [];
         const sb = getSupabase();
         if (!sb || !userId) return false;
 
@@ -124,7 +137,7 @@ export const store = {
                 .maybeSingle();
             if (error) throw error;
 
-            if (data?.data && Object.keys(data.data).length > 0) {
+            if (data?.data?._ownerId === userId) {
                 WORKSPACE_KEYS.forEach(key => {
                     if (data.data[key] !== undefined) {
                         localStorage.setItem(`alcove_${key}`, JSON.stringify(data.data[key]));
@@ -133,7 +146,9 @@ export const store = {
                 return true;
             }
 
-            // First signed-in session: preserve the student's existing local work.
+            // A new account must never inherit the sample workspace or another
+            // student's browser data.
+            this.resetWorkspaceForUser();
             await this.saveCloudWorkspace();
             return false;
         } catch (error) {
@@ -146,6 +161,13 @@ export const store = {
         this.cloudUserId = null;
         if (this.cloudSyncTimer) clearTimeout(this.cloudSyncTimer);
         this.cloudSyncTimer = null;
+    },
+
+    resetWorkspaceForUser() {
+        Object.entries(EMPTY_WORKSPACE).forEach(([key, value]) => {
+            localStorage.setItem(`alcove_${key}`, JSON.stringify(value));
+        });
+        this.user.notifications = [];
     },
 
     workspaceSnapshot() {
@@ -164,7 +186,7 @@ export const store = {
             const raw = localStorage.getItem(`alcove_${key}`);
             if (raw) snapshot[key] = JSON.parse(raw);
             return snapshot;
-        }, {});
+        }, { _ownerId: this.cloudUserId, _version: 2 });
     },
 
     async saveCloudWorkspace() {
@@ -228,9 +250,12 @@ export const store = {
         return chats[channelId] || [];
     },
 
-    addMessage(channelId, text, isSelf = true, senderName = "Alex Rivera", senderAvatar = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80") {
+    addMessage(channelId, text, isSelf = true, senderName, senderAvatar) {
         const chats = getOrInitialize("chats", MOCK_CHAT_MESSAGES);
         if (!chats[channelId]) chats[channelId] = [];
+
+        senderName ||= this.user.name;
+        senderAvatar ||= this.user.avatar;
         
         const now = new Date();
         const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
