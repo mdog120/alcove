@@ -6,7 +6,7 @@ import { store } from './store.js';
 import { getSupabase, getUserProfile, signOutUser } from './supabase.js';
 
 import { loginView } from './views/login.js';
-import { signupView } from './views/signup.js';
+import { signupView } from './views/signup-simple.js';
 import { dashboardView } from './views/dashboard.js';
 import { plannerView } from './views/planner.js';
 import { gpaView } from './views/gpa.js';
