@@ -14,8 +14,7 @@ export const loginView = {
                     <span>Alcove</span>
                 </div>
                 <div class="landing-actions">
-                    <button type="button" class="landing-actions-btn-link" id="nav-login-btn">Log In</button>
-                    <button type="button" class="landing-actions-btn-link" id="demo-login-btn">Try demo</button>
+                    <button type="button" class="landing-actions-btn-link" id="nav-login-btn">Log in</button>
                     <!-- Converted to direct native href anchor link -->
                     <a href="#signup" class="btn btn-primary btn-sm" id="nav-signup-btn" style="padding: 4px 10px; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none;">
                         Get Alcove Free
@@ -25,15 +24,12 @@ export const loginView = {
 
             <!-- Landing Page Hero Banner -->
             <section class="landing-hero">
-                <h1>Your school life, in one organized workspace.</h1>
+                <span class="landing-eyebrow">ONE HOME FOR STUDENT LIFE</span>
+                <h1>Make space for your best work.</h1>
                 <p>
-                    Alcove brings classes, assignments, GPA tracking, study sheets, and classmate group chats together into one beautiful place.
+                    Plan classes, protect focus time, and keep your campus community close—without juggling a dozen tabs.
                 </p>
-                <!-- Converted to direct native href anchor link -->
-                <a href="#signup" class="btn btn-primary" id="hero-cta-btn" style="padding: 8px 16px; font-size:13.5px; font-weight:600; display: inline-block; text-decoration: none;">
-                    Get Alcove Free &rarr;
-                </a>
-                <button type="button" class="landing-actions-btn-link" id="hero-demo-btn" style="margin-left: 10px;">Explore the demo</button>
+                <a href="#signup" class="btn btn-primary landing-primary-cta">Create your workspace <i class="fa-solid fa-arrow-right"></i></a>
             </section>
 
             <!-- Alternating Features Grid (Notion style with animated CSS demos) -->
@@ -42,8 +38,9 @@ export const loginView = {
                 <!-- Feature 1: Class Scheduler -->
                 <div class="landing-feature-card glass-panel">
                     <div class="landing-feature-text">
-                        <h3>Class Scheduler</h3>
-                        <p>Track assignments and exam deadlines on a calendar, Kanban board, or simple list view.</p>
+                        <span class="feature-kicker">01 — PLAN</span>
+                        <h3>Know what matters next.</h3>
+                        <p>One clear view of classes, deadlines, and the work worth focusing on today.</p>
                     </div>
                     <!-- CSS Kanban Demo Animation -->
                     <div class="demo-animation-box">
@@ -61,8 +58,9 @@ export const loginView = {
                 <!-- Feature 2: GPA Calculator -->
                 <div class="landing-feature-card glass-panel">
                     <div class="landing-feature-text">
-                        <h3>GPA Goal Calculator</h3>
-                        <p>Log course letter grades and calculate cumulative GPAs. Set targets and estimate grades needed.</p>
+                        <span class="feature-kicker">02 — TRACK</span>
+                        <h3>See the whole academic picture.</h3>
+                        <p>Keep grades and goals in context, so the semester never catches you off guard.</p>
                     </div>
                     <!-- CSS GPA Gauge Demo Animation -->
                     <div class="demo-animation-box">
@@ -79,8 +77,9 @@ export const loginView = {
                 <!-- Feature 3: Class Chats -->
                 <div class="landing-feature-card glass-panel">
                     <div class="landing-feature-text">
-                        <h3>Collaborative Chats</h3>
-                        <p>Join class group chats, matches with study partners, and launch secure direct messages.</p>
+                        <span class="feature-kicker">03 — CONNECT</span>
+                        <h3>Find your people, faster.</h3>
+                        <p>Class chats and study groups that make campus feel a little more navigable.</p>
                     </div>
                     <!-- CSS Scrolling Chat Demo Animation -->
                     <div class="demo-animation-box">
@@ -94,8 +93,9 @@ export const loginView = {
                 <!-- Feature 4: Note Sharing -->
                 <div class="landing-feature-card glass-panel">
                     <div class="landing-feature-text">
-                        <h3>Study Notes Library</h3>
-                        <p>Write rich note pages with formatting, and share them directly into the public Campus Library.</p>
+                        <span class="feature-kicker">04 — SHARE</span>
+                        <h3>Keep the useful stuff close.</h3>
+                        <p>Build a personal study library and share the notes that make a difference.</p>
                     </div>
                     <!-- CSS Notebook Typing Demo Animation -->
                     <div class="demo-animation-box">
@@ -172,10 +172,6 @@ export const loginView = {
         // Header Navigation Hooks
         const loginBtn = document.getElementById('nav-login-btn');
         if (loginBtn) loginBtn.addEventListener('click', openModal);
-
-        [document.getElementById('demo-login-btn'), document.getElementById('hero-demo-btn')]
-            .filter(Boolean)
-            .forEach(btn => btn.addEventListener('click', () => window.app.startDemoSession()));
 
         // Close Trigger Button hooks
         const closeBtn = document.getElementById('auth-close-btn');

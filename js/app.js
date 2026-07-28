@@ -58,8 +58,7 @@ class AppController {
             this.renderNotifications();
             setInterval(() => this.updateDateTime(), 60000); // update date every minute
 
-            // Orchestrate 3D Book Intro Animation
-            this.orchestrateIntroAnimation();
+            this.startApplication();
         };
 
         if (document.readyState === 'loading') {
@@ -124,10 +123,6 @@ class AppController {
             profileCard.style.cursor = 'pointer';
             profileCard.addEventListener('click', () => {
                 if (confirm("Would you like to sign out of Alcove?")) {
-                    if (this.user?.isDemo) {
-                        this.endDemoSession();
-                        return;
-                    }
                     signOutUser().then(() => {
                         this.showToast("Logged out successfully", "info");
                     });
@@ -136,54 +131,13 @@ class AppController {
         }
     }
 
-    // Orchestrates the 3D book animation opening
-    orchestrateIntroAnimation() {
-        const overlay = document.getElementById('intro-overlay');
-        const book = document.getElementById('intro-book');
-        const title = document.getElementById('intro-title');
-        
-        const introPlayed = sessionStorage.getItem('alcove_intro_played') === 'true';
-
-        if (introPlayed && overlay) {
-            // Already played in this session - skip animation entirely
-            overlay.remove();
-            this.handleRoute();
-            this.initSupabaseListener();
-        } else {
-            // Play custom 3D opening animations
-            setTimeout(() => {
-                if (book) book.classList.add('opened');
-            }, 600);
-
-            setTimeout(() => {
-                if (title) title.classList.add('reveal');
-            }, 1200);
-
-            setTimeout(() => {
-                if (overlay) overlay.classList.add('fade-out');
-            }, 3600);
-
-            setTimeout(() => {
-                if (overlay) overlay.remove();
-                sessionStorage.setItem('alcove_intro_played', 'true');
-                this.handleRoute();
-                this.initSupabaseListener();
-            }, 4400);
-        }
+    startApplication() {
+        this.handleRoute();
+        this.initSupabaseListener();
     }
 
     // Initializes Supabase session checking and Auth hooks
     initSupabaseListener() {
-        const savedDemo = localStorage.getItem('alcove_demo_user');
-        if (savedDemo) {
-            try {
-                this.activateUser({ ...JSON.parse(savedDemo), isDemo: true });
-                return;
-            } catch {
-                localStorage.removeItem('alcove_demo_user');
-            }
-        }
-
         const sb = getSupabase();
         if (!sb) {
             // Fallback for standalone mock operations if client config fails
@@ -214,11 +168,7 @@ class AppController {
         this.user = profile;
         Object.assign(store.user, profile);
 
-        if (profile.isDemo) {
-            store.disconnectCloudWorkspace();
-        } else {
-            await store.connectCloudWorkspace(profile.id);
-        }
+        await store.connectCloudWorkspace(profile.id);
 
         document.getElementById('sidebar-user-name').textContent = profile.name;
         document.getElementById('sidebar-user-school').textContent = profile.school;
@@ -237,29 +187,6 @@ class AppController {
         } else {
             this.handleRoute();
         }
-    }
-
-    async startDemoSession() {
-        const profile = {
-            id: 'local-demo',
-            name: 'Alex Rivera',
-            school: 'Stanford University',
-            year: "Stanford '27",
-            avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
-            isDemo: true
-        };
-        localStorage.setItem('alcove_demo_user', JSON.stringify(profile));
-        await this.activateUser(profile);
-        this.showToast('Demo workspace ready — changes are saved on this device.', 'success');
-    }
-
-    endDemoSession() {
-        localStorage.removeItem('alcove_demo_user');
-        this.user = null;
-        store.disconnectCloudWorkspace();
-        this.initSupabaseListener();
-        window.location.hash = '#login';
-        this.showToast('Signed out of the demo workspace.', 'info');
     }
 
     // Hash routing controller

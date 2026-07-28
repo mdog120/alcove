@@ -781,141 +781,6 @@ button {
 }
 
 /* ==========================================================================
-   8. Fullscreen 3D Book Intro Loading Animation
-   ========================================================================== */
-
-.intro-overlay {
-    position: fixed;
-    inset: 0;
-    background-color: var(--bg-primary);
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 32px;
-    opacity: 1;
-    transition: opacity 0.8s ease-in-out;
-}
-
-.intro-overlay.fade-out {
-    opacity: 0;
-    pointer-events: none;
-}
-
-.book-container {
-    perspective: 1000px;
-    width: 150px;
-    height: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.book {
-    width: 110px;
-    height: 150px;
-    position: relative;
-    transform-style: preserve-3d;
-    transform: rotateX(25deg) rotateY(-20deg);
-    transition: transform 1.5s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-/* Book opening state triggers */
-.book.opened {
-    transform: rotateX(20deg) rotateY(-10deg) scale(1.1);
-}
-
-.book-cover-front, .book-cover-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 2px 6px 6px 2px;
-    background-color: var(--color-primary); /* Sage Green */
-    border: 1px solid var(--border-color);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-    transform-origin: left center;
-}
-
-.book-cover-front {
-    z-index: 10;
-    transform: rotateY(0deg);
-    transition: transform 1.6s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-}
-
-.cover-logo {
-    width: 44px;
-    height: 44px;
-    border-radius: 4px;
-    object-fit: cover;
-    border: 1.5px solid rgba(255, 255, 255, 0.35);
-}
-
-.book-cover-back {
-    z-index: 1;
-    transform: rotateY(0deg);
-}
-
-.book-page {
-    position: absolute;
-    width: calc(100% - 4px);
-    height: calc(100% - 6px);
-    top: 3px;
-    right: 2px;
-    background-color: #faf6eb; /* Notion style page tint */
-    border: 1px solid var(--border-color);
-    border-left: none;
-    border-radius: 0 4px 4px 0;
-    transform-origin: left center;
-    transform: rotateY(0deg);
-    z-index: 5;
-    transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.page-1 { z-index: 8; transition-delay: 0.1s; }
-.page-2 { z-index: 7; transition-delay: 0.22s; }
-.page-3 { z-index: 6; transition-delay: 0.35s; }
-
-/* Book opened classes */
-.book.opened .book-cover-front {
-    transform: rotateY(-145deg);
-}
-
-.book.opened .page-1 {
-    transform: rotateY(-135deg);
-}
-
-.book.opened .page-2 {
-    transform: rotateY(-120deg);
-}
-
-.book.opened .page-3 {
-    transform: rotateY(-105deg);
-}
-
-.intro-title {
-    font-family: var(--font-heading);
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: -0.4px;
-    color: var(--text-primary);
-    opacity: 0;
-    transform: translateY(8px);
-    transition: opacity 1s ease, transform 1s ease;
-    transition-delay: 0.5s;
-}
-
-.intro-title.reveal {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* ==========================================================================
    8a. Landing Page Layout Overrides
    ========================================================================== */
 
@@ -935,4 +800,73 @@ button {
     overflow-y: auto;
 }
 
+/* ==========================================================================
+   Alcove product polish — calm, precise, and built for daily use
+   ========================================================================== */
+:root[data-theme="light"] {
+    --bg-primary: #f8f9fc;
+    --bg-secondary: #f1f3f9;
+    --bg-tertiary: #e8ebf5;
+    --bg-sidebar: #ffffff;
+    --text-primary: #171b2c;
+    --text-secondary: #667085;
+    --text-muted: #98a2b3;
+    --border-color: #e4e7ec;
+    --border-hover: #cdd3e1;
+    --panel-bg: #ffffff;
+    --panel-shadow: 0 1px 2px rgba(16, 24, 40, 0.03), 0 3px 10px rgba(16, 24, 40, 0.03);
+    --input-bg: #ffffff;
+    --input-border: #d0d5dd;
+    --input-focus: rgba(79, 70, 229, 0.15);
+    --card-hover-bg: #f5f6ff;
+}
 
+:root[data-theme="dark"] {
+    --bg-primary: #151725;
+    --bg-secondary: #1d2031;
+    --bg-tertiary: #282c41;
+    --bg-sidebar: #191b2a;
+    --text-primary: #f5f7fb;
+    --text-secondary: #b4b9c9;
+    --text-muted: #7d8498;
+    --border-color: #30344a;
+    --border-hover: #454b65;
+    --panel-bg: #202336;
+    --panel-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    --input-bg: #1a1d2d;
+    --input-border: #353a51;
+    --input-focus: rgba(129, 140, 248, 0.2);
+    --card-hover-bg: #272b42;
+}
+
+:root {
+    --color-primary: #4f46e5;
+    --color-primary-hover: #4338ca;
+    --border-radius-sm: 8px;
+    --border-radius-md: 14px;
+    --border-radius-lg: 20px;
+    --transition-smooth: background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.app-container { grid-template-columns: 252px 1fr; }
+.sidebar { padding: 16px 8px; }
+.sidebar-brand { padding: 8px 12px; margin-bottom: 20px; }
+.brand-logo-img { width: 30px; height: 30px; border-radius: 9px; border: 0; }
+.brand-name { font-size: 16px; letter-spacing: -0.5px; }
+.nav-item { padding: 9px 12px; border-radius: 8px; font-size: 13px; }
+.nav-item.active { background: #eeefff; color: #3730a3; }
+:root[data-theme="dark"] .nav-item.active { background: #2b2d57; color: #c7d2fe; }
+.top-header { height: 64px; padding: 0 32px; background: rgba(255,255,255,0.86); backdrop-filter: blur(12px); }
+:root[data-theme="dark"] .top-header { background: rgba(25,27,42,0.88); }
+.header-search { max-width: 340px; }
+.header-search input { padding: 8px 12px 8px 30px; border-radius: 9px; font-size: 12px; background: var(--panel-bg); }
+.viewport-content { padding: 32px 40px 48px; }
+.glass-panel { border-radius: 14px; box-shadow: var(--panel-shadow); }
+.btn { min-height: 34px; border-radius: 8px; font-weight: 600; }
+.btn-primary { box-shadow: 0 2px 5px rgba(79,70,229,0.22); }
+.btn-primary:hover { transform: translateY(-1px); }
+
+@media (max-width: 768px) {
+    .top-header { padding: 0 16px; }
+    .viewport-content { padding: 22px 16px 32px; }
+}
