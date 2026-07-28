@@ -1638,6 +1638,15 @@
 .auth-form .form-group { gap: 6px; }
 .auth-form input, .auth-form select { width: 100%; padding: 10px 12px; border: 1px solid var(--input-border); border-radius: 8px; background: var(--input-bg); color: var(--text-primary); font: inherit; font-size: 13px; }
 .auth-form input:focus, .auth-form select:focus { outline: 0; border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--input-focus); }
+.field-note { display: block; margin-top: 6px; color: var(--text-muted); font-size: 10.5px; line-height: 1.35; }
+.school-results { display: none; margin-top: 6px; overflow: hidden; border: 1px solid var(--border-color); border-radius: 8px; background: var(--panel-bg); box-shadow: 0 8px 20px rgba(60, 59, 55, 0.1); }
+.school-results.active { display: block; }
+.school-results-status { display: block; padding: 10px 12px; color: var(--text-muted); font-size: 11px; }
+.school-result { display: flex; width: 100%; padding: 10px 12px; border-bottom: 1px solid var(--border-color); text-align: left; flex-direction: column; gap: 1px; color: var(--text-primary); }
+.school-result:last-child { border-bottom: 0; }
+.school-result:hover { background: var(--card-hover-bg); }
+.school-result strong { font-size: 12px; font-weight: 600; }
+.school-result span { color: var(--text-muted); font-size: 10.5px; }
 .auth-submit { margin-top: 6px; min-height: 42px; }
 .auth-footnote { margin-top: 18px; color: var(--text-muted); font-size: 11px; line-height: 1.5; text-align: center; }
 

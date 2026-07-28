@@ -89,6 +89,12 @@ export const signupView = {
                             <div class="form-group">
                                 <label for="signup-school">School or university</label>
                                 <input id="signup-school" type="text" autocomplete="organization" placeholder="Start typing your school name" required>
+                                <div id="signup-school-results" class="school-results" aria-live="polite"></div>
+                                <span id="school-search-note" class="field-note">College results come from the U.S. Department of Education directory.</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="signup-district">School district <span class="text-muted">(high school students)</span></label>
+                                <input id="signup-district" type="text" autocomplete="organization" placeholder="e.g. Austin Independent School District">
                             </div>
                             <div class="form-group">
                                 <label for="signup-password">Password</label>
@@ -122,7 +128,8 @@ export const signupView = {
                         state: document.getElementById('signup-state').value,
                         city: document.getElementById('signup-city').value.trim(),
                         educationLevel: document.getElementById('signup-level').value,
-                        gradYear: document.getElementById('signup-year').value
+                        gradYear: document.getElementById('signup-year').value,
+                        schoolDistrict: document.getElementById('signup-district').value.trim()
                     }
                 );
 
@@ -147,6 +154,78 @@ export const signupView = {
                 submit.innerHTML = 'Create workspace <i class="fa-solid fa-arrow-right"></i>';
             }
         };
+
+        const schoolInput = document.getElementById('signup-school');
+        const schoolResults = document.getElementById('signup-school-results');
+        const levelInput = document.getElementById('signup-level');
+        const stateInput = document.getElementById('signup-state');
+        const searchNote = document.getElementById('school-search-note');
+        let searchTimer;
+
+        const clearResults = () => {
+            schoolResults.innerHTML = '';
+            schoolResults.classList.remove('active');
+        };
+
+        const setSearchMode = () => {
+            const college = levelInput.value === 'college';
+            searchNote.textContent = college
+                ? 'Search real colleges and universities from the U.S. Department of Education directory.'
+                : 'Enter your high school and district. A nationwide K–12 directory is being added next.';
+            clearResults();
+        };
+
+        const searchColleges = async () => {
+            const query = schoolInput.value.trim();
+            if (levelInput.value !== 'college' || query.length < 2) {
+                clearResults();
+                return;
+            }
+
+            schoolResults.innerHTML = '<span class="school-results-status">Searching schools…</span>';
+            schoolResults.classList.add('active');
+            try {
+                const params = new URLSearchParams({
+                    api_key: 'DEMO_KEY',
+                    'school.name': query,
+                    fields: 'id,school.name,school.city,school.state',
+                    per_page: '8'
+                });
+                if (stateInput.value) params.set('school.state', stateInput.value);
+                const response = await fetch(`https://api.data.gov/ed/collegescorecard/v1/schools.json?${params}`);
+                if (!response.ok) throw new Error('School search is temporarily unavailable.');
+                const data = await response.json();
+                const schools = data.results || [];
+                if (!schools.length) {
+                    schoolResults.innerHTML = '<span class="school-results-status">No match found — you can still enter your school manually.</span>';
+                    return;
+                }
+                schoolResults.innerHTML = schools.map(school => `
+                    <button type="button" class="school-result" data-school="${school['school.name']}" aria-label="Select ${school['school.name']}">
+                        <strong>${school['school.name']}</strong>
+                        <span>${school['school.city'] || ''}${school['school.city'] && school['school.state'] ? ', ' : ''}${school['school.state'] || ''}</span>
+                    </button>
+                `).join('');
+                schoolResults.querySelectorAll('.school-result').forEach(result => {
+                    result.addEventListener('click', () => {
+                        schoolInput.value = result.dataset.school;
+                        clearResults();
+                    });
+                });
+            } catch (error) {
+                schoolResults.innerHTML = '<span class="school-results-status">Search is unavailable — enter your school manually.</span>';
+            }
+        };
+
+        schoolInput.addEventListener('input', () => {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(searchColleges, 300);
+        });
+        levelInput.addEventListener('change', setSearchMode);
+        stateInput.addEventListener('change', () => {
+            if (schoolInput.value.trim().length >= 2) searchColleges();
+        });
+        setSearchMode();
     }
 };
 
